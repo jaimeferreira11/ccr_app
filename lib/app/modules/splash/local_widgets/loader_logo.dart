@@ -1,5 +1,5 @@
 import 'package:animate_do/animate_do.dart';
-
+import 'package:ccr_app/app/helpers/extensions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../helpers/responsive.dart';
@@ -36,9 +36,12 @@ class LoaderLogo extends StatelessWidget {
                   ),
                   ZoomIn(
                       delay: const Duration(milliseconds: 800),
-                      child: const Hero(
+                      child: Hero(
                         tag: 'login',
-                        child: FlutterLogo(size: 200),
+                        child: Image.asset(
+                          'assets/images/logo_ccr.png',
+                          height: context.hp(20),
+                        ),
                       )),
                   SizedBox(
                     height: responsive.hp(2),

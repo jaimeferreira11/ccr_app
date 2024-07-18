@@ -147,6 +147,9 @@ class SurveyItemsPage extends StatelessWidget {
                             },
                             text: 'Volver',
                             isFilled: false,
+                          ),
+                          SizedBox(
+                            height: context.hp(1),
                           )
                         ],
                       ),

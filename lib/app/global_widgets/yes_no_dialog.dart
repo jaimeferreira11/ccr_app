@@ -194,7 +194,7 @@ class _StackDialog extends StatelessWidget {
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               child: icon ??
                   Image.asset(
-                    "assets/images/ic_launcher.png",
+                    "assets/images/zoomin.png",
                   ),
             ),
           ),
@@ -256,7 +256,7 @@ class _StackDialogSiNo extends StatelessWidget {
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               child: Image.asset(
-                "assets/images/ic_launcher.png",
+                "assets/images/zoomin.png",
               ),
             ),
           ),
@@ -622,10 +622,8 @@ class _FormularioError extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-                fontSize: 18,
-                color: Colors.red.shade700,
-                fontWeight: FontWeight.w500),
+            style: context.textTheme.titleMedium?.copyWith(
+                color: Colors.red.shade700, fontWeight: FontWeight.w500),
           ),
           const SizedBox(
             height: 5,
@@ -636,7 +634,8 @@ class _FormularioError extends StatelessWidget {
           ),
           Text(
             mensaje,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+            style: context.textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400),
           ),
           const SizedBox(
             height: 10,

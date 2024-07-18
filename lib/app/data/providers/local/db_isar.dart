@@ -74,7 +74,7 @@ class DBIsar {
   }
 
   Future<List<BocaModel>> getBocas(
-      {int limit = 50,
+      {int limit = 10,
       int offset = 0,
       String term = '',
       String ciudad = '',
@@ -284,5 +284,29 @@ class DBIsar {
           .deleteAll(detalles.map((d) => d.isarId!).toList());
       await isar.respuestaCabModels.delete(respuesta.isarId!);
     });
+  }
+
+  Future<void> deleteRespuestaSincronizadas() async {
+    final isar = await db;
+
+    final list = await isar.respuestaCabModels
+        .filter()
+        .sincronizadoEqualTo(true)
+        .usuarioEqualTo(Cache.instance.loginData.usuario.usuario,
+            caseSensitive: false)
+        .findAll();
+
+    if (list.isEmpty) {
+      return;
+    }
+
+    await Future.wait(list.map((r) async {
+      r.detalles = await getRespuestaDetByCab(r.isarId!);
+      await isar.writeTxn(() async {
+        await isar.respuestaDetModels
+            .deleteAll(r.detalles.map((d) => d.isarId!).toList());
+        await isar.respuestaCabModels.delete(r.isarId!);
+      });
+    }));
   }
 }

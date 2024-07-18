@@ -21,7 +21,7 @@ class HomeView extends StatelessWidget {
     final controller = Get.find<HomeController>();
 
     return StreamBuilder<SyncModel>(
-        stream: controller.streamController,
+        stream: controller.stream,
         builder: (context, snapshot) {
           final syncData = snapshot.data;
           return Column(
@@ -73,30 +73,31 @@ class HomeView extends StatelessWidget {
                       ),
                       const Spacer(),
                       SizedBox(
-                        width: context.wp(50),
+                        width: context.wp(30),
                         child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Estudio',
-                                textAlign: TextAlign.center,
-                                style: textTheme.bodySmall!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              ),
-                              FilledButton.icon(
-                                  onPressed: () {},
-                                  label: Text('Bebidas del Paraguay',
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: textTheme.labelSmall!
-                                          .copyWith(color: Colors.white)))
-                            ],
-                          ),
-                        ),
+                            alignment: Alignment.centerRight,
+                            child: Image.asset('assets/images/bdp.png')
+                            // Column(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   crossAxisAlignment: CrossAxisAlignment.center,
+                            //   children: [
+                            //     Text(
+                            //       'Estudio',
+                            //       textAlign: TextAlign.center,
+                            //       style: textTheme.bodySmall!
+                            //           .copyWith(fontWeight: FontWeight.bold),
+                            //     ),
+                            //     FilledButton.icon(
+                            //         onPressed: () {},
+                            //         label: Text('Bebidas del Paraguay',
+                            //             textAlign: TextAlign.center,
+                            //             maxLines: 2,
+                            //             overflow: TextOverflow.ellipsis,
+                            //             style: textTheme.labelSmall!
+                            //                 .copyWith(color: Colors.white)))
+                            //   ],
+                            // ),
+                            ),
                       )
                     ],
                   )),

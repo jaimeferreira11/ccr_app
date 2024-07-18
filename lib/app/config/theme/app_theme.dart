@@ -12,7 +12,10 @@ class AppTheme {
         primaryColor: AppColors.primaryColor,
         primarySwatch: AppColors.inputColor,
         appBarTheme: const AppBarTheme(
-            centerTitle: true, titleTextStyle: TextStyle(fontSize: 16)),
+            backgroundColor: AppColors.darkColor,
+            foregroundColor: Colors.white,
+            centerTitle: true,
+            titleTextStyle: TextStyle(fontSize: 16)),
         scaffoldBackgroundColor: Colors.grey.shade100,
         inputDecorationTheme: InputDecorationTheme(
             isDense: true,
@@ -41,7 +44,7 @@ class AppTheme {
               fontWeight: FontWeight.w600,
             )),
         buttonTheme: ButtonThemeData(
-            buttonColor: Colors.blueAccent,
+            buttonColor: AppColors.primaryColor,
             colorScheme:
                 ColorScheme.fromSeed(seedColor: AppColors.accentColor)),
         filledButtonTheme: FilledButtonThemeData(

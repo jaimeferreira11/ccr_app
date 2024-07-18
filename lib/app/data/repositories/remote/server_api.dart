@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ccr_app/app/data/models/image_upload_dto_model.dart';
 import 'package:ccr_app/app/data/models/models.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
@@ -101,6 +102,17 @@ class ServerAPI {
     }
   }
 
+  Future<Either<Failure, void>> subirImagen(ImageUploadDtoModel body) async {
+    const url = 'api/v1/upload-image';
+
+    final res = await _dio.client.post(url, data: jsonEncode(body));
+    if (res.statusCode == 200) {
+      return right(null);
+    } else {
+      return left(const ServerFailure());
+    }
+  }
+
   // Future<Either<Failure, UsuarioModel>> verificarSession() async {
   //   final url = AppConstants.API_URL + 'api/v1/oauth/check-token';
 
@@ -130,26 +142,27 @@ class ServerAPI {
   //   }
   // }
 
-  // Future<Either<Failure, String>> cambiarPassword(
-  //     String oldPwd, String newPwd) async {
-  //   final url = AppConstants.API_URL + 'private/change-user-password';
+  Future<Either<Failure, void>> cambiarPassword(
+      {required String usuario,
+      required String oldPwd,
+      required String newPwd}) async {
+    const url = 'api/v1/usuarios/change-password';
 
-  //   final res = await _dio.client.post(url, queryParameters: {
-  //     'currentpassword': oldPwd,
-  //     'newpassword': newPwd,
-  //   });
-  //   print(res.statusCode);
-  //   if (res.statusCode == 200) {
-  //     final respuesta = RespuestaModel.fromJson(res.data);
-  //     if (respuesta.estado.toUpperCase() == 'OK') {
-  //       return right(respuesta.datos);
-  //     } else {
-  //       return left(CacheFailure(mensaje: respuesta.error));
-  //     }
-  //   } else {
-  //     return left(ServerFailure(mensaje: "Error interno. Intente mas tarde"));
-  //   }
-  // }
+    final body = {
+      'usuario': usuario,
+      'oldPassword': oldPwd,
+      'newPassword': newPwd,
+    };
+    final res = await _dio.client.put(url, data: jsonEncode(body));
+    if (res.statusCode == 200) {
+      return right(null);
+    }
+    if (res.statusCode == 400 || res.statusCode == 403) {
+      return left(const ServerFailure(mensaje: 'Datos incorrectos'));
+    } else {
+      return left(const ServerFailure());
+    }
+  }
 
   // Future<Either<Failure, String>> recuperarClave(String correo) async {
   //   final url = AppConstants.API_URL + 'public/usuario/cambiar-clave"';

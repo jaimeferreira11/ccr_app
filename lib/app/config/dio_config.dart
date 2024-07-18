@@ -75,7 +75,7 @@ class DioService {
       // If you want to reject the request with a error message,
       // you can reject a `DioError` object eg: return `dio.reject(dioError)`
     }, onError: (DioException e, handler) {
-      //log('Api code error: ${e.response!.statusCode}');
+      log('Api code error: ${e.response?.statusCode}');
       // log('Desc error: ${e.response!.toString()}');
       // Do something with response error
 

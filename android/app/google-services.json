@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "741939713853",
+    "project_id": "ccr-zoomin",
+    "storage_bucket": "ccr-zoomin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741939713853:android:e9bd9c890802b8aca71754",
+        "android_client_info": {
+          "package_name": "py.com.jaimeferreira.ccr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA25gojPgAaSP2CoeS4WAxRR3ViAkTvYkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

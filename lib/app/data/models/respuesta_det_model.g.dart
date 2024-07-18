@@ -50,7 +50,7 @@ const RespuestaDetModelSchema = CollectionSchema(
     r'precio': PropertySchema(
       id: 6,
       name: r'precio',
-      type: IsarType.long,
+      type: IsarType.string,
     ),
     r'valor': PropertySchema(
       id: 7,
@@ -86,6 +86,12 @@ int _respuestaDetModelEstimateSize(
     }
   }
   bytesCount += 3 + object.descItem.length * 3;
+  {
+    final value = object.precio;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.valor.length * 3;
   return bytesCount;
 }
@@ -102,7 +108,7 @@ void _respuestaDetModelSerialize(
   writer.writeLong(offsets[3], object.id);
   writer.writeLong(offsets[4], object.idItem);
   writer.writeLong(offsets[5], object.idRespuestaCab);
-  writer.writeLong(offsets[6], object.precio);
+  writer.writeString(offsets[6], object.precio);
   writer.writeString(offsets[7], object.valor);
 }
 
@@ -119,7 +125,7 @@ RespuestaDetModel _respuestaDetModelDeserialize(
     id: reader.readLongOrNull(offsets[3]),
     idItem: reader.readLong(offsets[4]),
     idRespuestaCab: reader.readLongOrNull(offsets[5]),
-    precio: reader.readLongOrNull(offsets[6]),
+    precio: reader.readStringOrNull(offsets[6]),
     valor: reader.readString(offsets[7]),
   );
   object.isarId = id;
@@ -146,7 +152,7 @@ P _respuestaDetModelDeserializeProp<P>(
     case 5:
       return (reader.readLongOrNull(offset)) as P;
     case 6:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
       return (reader.readString(offset)) as P;
     default:
@@ -973,49 +979,58 @@ extension RespuestaDetModelQueryFilter
   }
 
   QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
-      precioEqualTo(int? value) {
+      precioEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'precio',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
       precioGreaterThan(
-    int? value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'precio',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
       precioLessThan(
-    int? value, {
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'precio',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
       precioBetween(
-    int? lower,
-    int? upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1024,6 +1039,77 @@ extension RespuestaDetModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
+      precioStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'precio',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
+      precioEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'precio',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
+      precioContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'precio',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
+      precioMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'precio',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
+      precioIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'precio',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<RespuestaDetModel, RespuestaDetModel, QAfterFilterCondition>
+      precioIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'precio',
+        value: '',
       ));
     });
   }
@@ -1457,9 +1543,9 @@ extension RespuestaDetModelQueryWhereDistinct
   }
 
   QueryBuilder<RespuestaDetModel, RespuestaDetModel, QDistinct>
-      distinctByPrecio() {
+      distinctByPrecio({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'precio');
+      return query.addDistinctBy(r'precio', caseSensitive: caseSensitive);
     });
   }
 
@@ -1517,7 +1603,7 @@ extension RespuestaDetModelQueryProperty
     });
   }
 
-  QueryBuilder<RespuestaDetModel, int?, QQueryOperations> precioProperty() {
+  QueryBuilder<RespuestaDetModel, String?, QQueryOperations> precioProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'precio');
     });

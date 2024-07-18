@@ -20,7 +20,7 @@ class Environments {
   static EnvConfig get prod => EnvConfig(
       environment: Environment.prod,
       appName: "Zoomin",
-      baseUrl: "http://app.crecer.com.py:8880/ccr-rest-api/", // produccion
+      baseUrl: "http://200.108.131.206:8051/ccr-rest-api/", // produccion
       shouldCollectCrashLog: true,
       imagesFolder: 'zoomin-bebidas');
 }

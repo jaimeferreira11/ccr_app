@@ -2,16 +2,19 @@ import 'dart:async';
 
 import 'package:ccr_app/app/data/models/sync_model.dart';
 import 'package:ccr_app/app/data/providers/local/cache.dart';
+import 'package:ccr_app/app/global_widgets/yes_no_dialog.dart';
+import 'package:ccr_app/app/helpers/date_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../data/providers/local/db_isar.dart';
 import '../../data/repositories/local/auth_repository.dart';
 import '../../data/repositories/remote/server_repository.dart';
 import '../../global_widgets/cambiar_password_widget.dart';
-import '../../global_widgets/yes_no_dialog.dart';
 import '../../helpers/notifications/notificacion_service.dart';
+import '../../helpers/notifications/notifications_keys.dart';
 import '../../routes/app_routes.dart';
 import '../../routes/navigator.dart';
 import 'local_widgets/custom_drawer.dart';
@@ -25,9 +28,16 @@ class HomeController extends GetxController {
 
   final isar = DBIsar();
 
-  final StreamController<SyncModel> _streamController =
-      StreamController<SyncModel>();
-  Stream<SyncModel> get streamController => _streamController.stream;
+  // StreamController<SyncModel> _streamController = StreamController<SyncModel>();
+  // Stream<SyncModel> get streamController => _streamController.stream;
+
+  // Stream<SyncModel> get stream => _streamController.stream.asBroadcastStream();
+
+  //
+  final BehaviorSubject<SyncModel> _streamController =
+      BehaviorSubject<SyncModel>();
+
+  Stream<SyncModel> get stream => _streamController.stream;
 
   void addDataToStream(SyncModel data) {
     _streamController.add(data);
@@ -40,7 +50,7 @@ class HomeController extends GetxController {
   final drawerItems = [
     DrawerItem("Inicio", FontAwesomeIcons.house),
     // DrawerItem("Perfil", FontAwesomeIcons.userLarge),
-    // DrawerItem("Cambiar contraseña", FontAwesomeIcons.userLock),
+    DrawerItem("Cambiar contraseña", FontAwesomeIcons.userLock),
     // DrawerItem("Ajustes", FontAwesomeIcons.gear),
     DrawerItem("Salir", FontAwesomeIcons.rightFromBracket)
   ];
@@ -85,7 +95,16 @@ class HomeController extends GetxController {
 
   Future<void> getSyncData() async {
     final resp = await authRepo.getSyncData();
-    resp.fold((l) {}, (r) async {
+    resp.fold((l) async {
+      final bocas = await isar.getBocas();
+      if (bocas.isNotEmpty) {
+        final syncData =
+            SyncModel(download: DateHelper.dateToString(date: DateTime.now()));
+
+        Cache.instance.syncData = syncData;
+        addDataToStream(syncData);
+      }
+    }, (r) async {
       final count = await getPendientes();
       r.cantidadPendientes = count;
       Cache.instance.syncData = r;
@@ -106,7 +125,7 @@ class HomeController extends GetxController {
   }
 
   onSelectItem(int index) {
-    nav.back();
+    Get.back();
 
 // limoiar pantalla password
     limpiarPantallaPass();
@@ -114,7 +133,7 @@ class HomeController extends GetxController {
       case 0:
         title = "Inicio";
         selectedDrawerIndex = index;
-        currentPage = Container();
+        currentPage = const HomeView();
         update();
         break;
       case 1:
@@ -129,7 +148,6 @@ class HomeController extends GetxController {
       default:
         return const Text("Hola");
     }
-
     update();
   }
 
@@ -181,32 +199,41 @@ class HomeController extends GetxController {
     if (newPassword != repeatNewPassword) {
       errorPass.value = "Las nuevas contraseñas no coinciden";
       return;
-    } else if (newPassword!.length < 7 || oldPassword!.length < 7) {
-      errorPass.value = "Las contrasen1as deben tener al menos 7 caracteres";
+    } else if (newPassword!.length < 6 || oldPassword!.length < 6) {
+      errorPass.value = "Las contrasen1as deben tener al menos 6 caracteres";
       return;
     } else {
       errorPass.value = "";
     }
-    ignore.value = true;
 
-    // final resp = await serverRepo.cambiarPassword(oldPassword!, newPassword!);
+    try {
+      ignore.value = true;
 
-    // ignore.value = false;
-    // resp.fold((l) {
-    //   if (l is CacheFailure) {
-    //     errorPass.value = l.mensaje;
-    //   } else {
-    //     noti.mostrarInternalError(
-    //         mensaje: l.mensaje, position: SnackPosition.BOTTOM);
-    //   }
-    // }, (r) async {
-    //   errorPass.value = "";
-    //   limpiarPantallaPass();
-    //   noti.mostrarSnackBar(
-    //       color: NotiKey.success,
-    //       mensaje: "Contrasen1a actualizada correctamente",
-    //       titulo: "Actualizado");
-    // });
+      final resp = await serverRepo.cambiarPassword(
+          usuario: Cache.instance.loginData.usuario.usuario,
+          oldPwd: oldPassword!,
+          newPwd: newPassword!);
+
+      ignore.value = false;
+      resp.fold((l) {
+        DialogoSiNo().abrirDialogoError(l.mensaje);
+      }, (r) async {
+        final model = Cache.instance.loginData.copyWith(
+            usuario: Cache.instance.loginData.usuario
+                .copyWith(password: newPassword));
+        authRepo.setAuthToken(model);
+        errorPass.value = "";
+        limpiarPantallaPass();
+        noti.mostrarSnackBar(
+            color: NotiKey.success,
+            mensaje: "Contraseña modificada correctamente",
+            titulo: "Actualizado");
+      });
+    } catch (e) {
+      ignore.value = false;
+      print(e);
+      DialogoSiNo().abrirDialogoError(e.toString());
+    }
   }
 
   // Cerrar sesion
@@ -228,7 +255,7 @@ class HomeController extends GetxController {
   Future<void> cerrarSesion() async {
     // await serverRepo.logout();
     // await authRepo.deleteAuthToken();
-    // await authRepo.deleteUsuario();
+    await authRepo.deleteAuthToken();
 
     Future.delayed(const Duration(milliseconds: 500), () {
       nav.back();
@@ -237,12 +264,12 @@ class HomeController extends GetxController {
   }
 
   Future<bool> onWillPop(bool didPop) async {
-    final dialog =
-        await DialogoSiNo().abrirDialogoSiNo('Desea salir de la app?', '');
-    if (dialog == 1) {
-      Get.back();
-      return true;
-    }
+    // final dialog =
+    //     await DialogoSiNo().abrirDialogoSiNo('Desea salir de la app?', '');
+    // if (dialog == 1) {
+    //   Get.back();
+    //   return true;
+    // }
     return false;
   }
 

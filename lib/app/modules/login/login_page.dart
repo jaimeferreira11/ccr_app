@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:ccr_app/app/helpers/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -35,17 +36,18 @@ class LoginPage extends StatelessWidget {
                                 tag: 'login',
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                      top: responsive.hp(3),
+                                      top: responsive.hp(5),
                                       bottom: responsive.hp(.5)),
-                                  child: const FlutterLogo(
-                                    size: 100,
+                                  child: Image.asset(
+                                    'assets/images/logo_ccr.png',
+                                    height: context.hp(15),
                                   ),
                                 ),
                               ),
                               FadeInDown(
                                   child: Center(
                                 child: Text(
-                                  'CCR - Zoomin',
+                                  'Zoomin',
                                   style: AppFonts.primaryFont.copyWith(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white,

@@ -28,4 +28,20 @@ class UsuarioModel {
         "nombreApellido": nombreApellido,
         "activo": activo,
       };
+
+  UsuarioModel copyWith({
+    int? id,
+    String? usuario,
+    String? password,
+    String? nombreApellido,
+    bool? activo,
+  }) {
+    return UsuarioModel(
+      id: id ?? this.id,
+      usuario: usuario ?? this.usuario,
+      password: password ?? this.password,
+      nombreApellido: nombreApellido ?? this.nombreApellido,
+      activo: activo ?? this.activo,
+    );
+  }
 }

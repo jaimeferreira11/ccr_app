@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../routes/app_routes.dart';
-import '../theme/colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? titulo;
@@ -17,8 +16,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     // final responsive = Responsive.of(context);
     return AppBar(
-      backgroundColor: AppColors.darkColor,
-      foregroundColor: Colors.white,
+      // backgroundColor: AppColors.darkColor,
+      // foregroundColor: Colors.white,
       title: titulo == null
           ? Container(
               margin: const EdgeInsets.only(top: 5),
@@ -52,7 +51,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       Size.fromHeight(AppBar().preferredSize.height * 1.1);
 
   Future<void> launchDialogCerrarSesion() async {
-    final dial = await DialogoSiNo().abrirDialogoSiNo('Cerrar sesión?', '');
+    final dial = await DialogoSiNo().abrirDialogoSiNo('¿Cerrar sesión?', '');
     if (dial == 0) return;
 
     Get.dialog(

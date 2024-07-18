@@ -164,7 +164,13 @@ class BocasPage extends StatelessWidget {
                                       shrinkWrap: true,
                                       delegate: PaginationDelegate(
                                         firstPageLoadingBuilder: (context) =>
-                                            const CircularProgressIndicator(),
+                                            Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: context.hp(10)),
+                                          child: const Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        ),
                                         firstPageNoItemsBuilder: (context) =>
                                             Container(),
                                         itemCount: _.bocas.length,

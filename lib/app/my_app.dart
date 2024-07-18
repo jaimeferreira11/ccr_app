@@ -1,3 +1,4 @@
+import 'package:ccr_app/flavors/enviroment.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,7 +23,10 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: _envConfig.appName,
-      debugShowCheckedModeBanner: false,
+      // debugShowCheckedModeBanner: false,
+
+      debugShowCheckedModeBanner:
+          _envConfig.environment.toString() == Environments.dev.toString(),
       // idioma
       locale: Get.deviceLocale,
       // supportedLocales: _getSupportedLocal(),

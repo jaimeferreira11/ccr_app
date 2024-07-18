@@ -21,7 +21,7 @@ class AuthRepository {
   Future<Either<Failure, bool>> deleteAuthToken() async {
     try {
       // await _storage.deleteAll();
-      await sharedPreferences.clear();
+      await sharedPreferences.remove(cachedToken);
       return const Right(true);
     } on CacheException {
       return const Left(CacheFailure());

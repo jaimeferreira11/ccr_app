@@ -12,7 +12,7 @@ class RespuestaDetModel {
   String cabecera;
   String valor;
   String? comentario;
-  int? precio;
+  String? precio;
 
   RespuestaDetModel({
     this.id,

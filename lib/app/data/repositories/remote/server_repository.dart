@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 
 import '../../../config/errors/failures.dart';
+import '../../models/image_upload_dto_model.dart';
 
 class ServerRepository {
   final ServerAPI _api = Get.find<ServerAPI>();
@@ -23,14 +24,19 @@ class ServerRepository {
           List<RespuestaCabModel> respuestas) =>
       _api.subirRespuestas(respuestas);
 
+  Future<Either<Failure, void>> subirImagen(ImageUploadDtoModel body) =>
+      _api.subirImagen(body);
+
+  Future<Either<Failure, void>> cambiarPassword(
+          {required String usuario,
+          required String oldPwd,
+          required String newPwd}) =>
+      _api.cambiarPassword(usuario: usuario, oldPwd: oldPwd, newPwd: newPwd);
+
   // Future<Either<Failure, String>> actualizarUsuario(UsuarioModel user) =>
   //     _api.actualizarUsuario(user);
 
   // Future<void> logout() => _api.logout();
-
-  // Future<Either<Failure, String>> cambiarPassword(
-  //         String password, String newpassword) =>
-  //     _api.cambiarPassword(password, newpassword);
 
   // Future<Either<Failure, String>> sendMail(String asunto, String mensaje) =>
   //     _api.sendMail(asunto, mensaje);

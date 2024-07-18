@@ -6,6 +6,7 @@ import 'package:ccr_app/app/data/providers/local/cache.dart';
 import 'package:ccr_app/app/helpers/date_helper.dart';
 import 'package:ccr_app/app/helpers/file_helper.dart';
 import 'package:ccr_app/app/modules/home/home_controller.dart';
+import 'package:ccr_app/app/modules/new_survey/survey_items_precio_correcto_page.dart';
 import 'package:ccr_app/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -110,7 +111,7 @@ class NewSurveyController extends GetxController {
 
     workInProgress.value = true;
     final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.camera, imageQuality: 30);
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 40);
 
     workInProgress.value = false;
     if (pickedFile != null) {
@@ -160,7 +161,8 @@ class NewSurveyController extends GetxController {
     cabeceras = await isar.getCabeceras();
     String mes = DateHelper.dateToString(date: DateTime.now(), format: 'MM');
     String anio = DateHelper.dateToString(date: DateTime.now(), format: 'yyyy');
-    String fileName = '${nuevaRespuesta!.codBoca}_${mes}_${anio}_1';
+    String dia = DateHelper.dateToString(date: DateTime.now(), format: 'dd');
+    String fileName = '${nuevaRespuesta!.codBoca}_${dia}_${mes}_${anio}_1';
     log(fileName);
     final path = await FileHelper.saveImageToDirectory(fotos.last,
         folderName: BuildConfig.instance.config.imagesFolder,
@@ -197,7 +199,7 @@ class NewSurveyController extends GetxController {
 
       await Future.delayed(const Duration(milliseconds: 50), () {
         Get.back();
-        // Get.back();
+        Get.back();
         nav.goToOff(AppRoutes.resumeSurvey,
             parameters: {'id': savedId.toString()});
       });
@@ -227,6 +229,11 @@ class NewSurveyController extends GetxController {
   void selectCabecera(CabeceraModel c) {
     cabeceraSelected = c;
 
+    if (c.codigo.toUpperCase() == 'PRECIO_CORRECTO') {
+      Get.to(() => const SurveyItemsPrecioCorrectoPage());
+      return;
+    }
+
     Get.to(() => const SurveyItemsPage());
   }
 
@@ -249,7 +256,8 @@ class NewSurveyController extends GetxController {
   Future<void> responder(
       {required ItemModel item,
       required String valor,
-      String comentario = ''}) async {
+      String comentario = '',
+      String precio = ''}) async {
     final existe =
         nuevaRespuesta!.detalles.firstWhereOrNull((d) => d.idItem == item.id);
     if (existe != null) {
@@ -261,6 +269,7 @@ class NewSurveyController extends GetxController {
         descItem: item.descripcion,
         cabecera: item.codCabecera,
         valor: valor,
+        precio: precio,
         comentario: comentario));
   }
 

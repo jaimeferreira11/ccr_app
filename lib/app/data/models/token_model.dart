@@ -29,4 +29,14 @@ class TokenModel {
         "usuario": usuario.toJson(),
         "token": token,
       };
+
+  TokenModel copyWith({
+    UsuarioModel? usuario,
+    String? token,
+  }) {
+    return TokenModel(
+      usuario: usuario ?? this.usuario,
+      token: token ?? this.token,
+    );
+  }
 }

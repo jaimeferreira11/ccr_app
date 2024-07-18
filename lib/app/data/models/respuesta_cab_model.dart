@@ -28,6 +28,9 @@ class RespuestaCabModel {
   @ignore
   List<RespuestaDetModel> detalles;
 
+  @ignore
+  String? pathImagenAux; // solo para uso local
+
   RespuestaCabModel(
       {this.id,
       this.isarId,

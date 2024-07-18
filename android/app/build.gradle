@@ -1,5 +1,8 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
@@ -58,18 +61,18 @@ android {
     productFlavors {
         prod {
             dimension "default"
-            resValue "string", "app_name", "CCR Zoomit"
+            resValue "string", "app_name", "CCR Zoomin"
         }
         qa {
             dimension "default"
             applicationIdSuffix ".tes" 
-            resValue "string", "app_name", "CCR Zoomit Test"
+            resValue "string", "app_name", "CCR Zoomin Test"
             versionNameSuffix ".test"
         }
         dev {
             dimension "default"
             // applicationIdSuffix ".dev" // crear el proyecto en firebase para implementar esto
-            resValue "string", "app_name", "CCR Zoomit Dev"
+            resValue "string", "app_name", "CCR Zoomin Dev"
             versionNameSuffix ".dev"
         }
     }

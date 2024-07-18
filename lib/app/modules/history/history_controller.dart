@@ -115,12 +115,15 @@ class HistoryController extends GetxController
 
     try {
       workInProgress.value = true;
-      await Future.delayed(const Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 50));
 
       await Future.wait(respuestaToUpload.map((r) async {
         final fileName = r.pathImagen.substring(r.pathImagen.lastIndexOf('/'));
         r.imgBase64String = await FileHelper.convertFileToBase64(r.pathImagen);
-        r.pathImagen = '${BuildConfig.instance.config.imagesFolder}$fileName';
+        r.pathImagenAux = String.fromCharCodes(r.pathImagen.codeUnits);
+
+        r.pathImagen =
+            '${BuildConfig.instance.config.imagesFolder}/${r.codBoca}$fileName';
       }));
       final resp = await serverRepo.subirRespuestas(respuestaToUpload);
       workInProgress.value = false;
@@ -128,6 +131,8 @@ class HistoryController extends GetxController
       resp.fold((l) => notif.mostrarInternalError(mensaje: l.mensaje),
           (r) async {
         await Future.wait(respuestaToUpload.map((r) async {
+          // volver a poner el path real
+          r.pathImagen = r.pathImagenAux ?? 'no-path';
           await isar.setRespuestaSincronizado(r);
         }));
 
@@ -142,5 +147,28 @@ class HistoryController extends GetxController
       workInProgress.value = false;
       notif.mostrarInternalError(mensaje: e.toString());
     }
+  }
+
+  Future<void> deleteSincronizados() async {
+    final dial = await DialogoSiNo().abrirDialogoSiNo(
+        '¿Borrar relevos subidos del dispositivo?',
+        'Esta acción no tiene es irreversible');
+
+    if (dial == 0) {
+      return;
+    }
+
+    int cantElimanadas = respuestasSubidas.length;
+
+    workInProgress.value = true;
+    await isar.deleteRespuestaSincronizadas();
+
+    await getData();
+    workInProgress.value = false;
+
+    update();
+
+    DialogoSiNo().abrirDialogoSucccess(
+        '$cantElimanadas registros eliminados del dispotivo');
   }
 }

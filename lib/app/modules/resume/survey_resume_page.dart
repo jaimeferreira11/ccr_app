@@ -7,7 +7,6 @@ import 'package:ccr_app/app/global_widgets/custom_card.dart';
 import 'package:ccr_app/app/global_widgets/full_screen_image_view.dart';
 import 'package:ccr_app/app/global_widgets/line_separator_widget.dart';
 import 'package:ccr_app/app/helpers/extensions.dart';
-import 'package:ccr_app/app/helpers/notifications/notifications_keys.dart';
 import 'package:ccr_app/app/modules/resume/survey_resume_controller.dart';
 import 'package:ccr_app/app/theme/colors.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +25,11 @@ class SurveyResumePage extends StatelessWidget {
         builder: (_) => SafeArea(
               child: PopScope(
                 onPopInvoked: (didPop) {
-                  if (_.isFromSurvey == false) return;
-                  _.notif.mostrarSnackBar(
-                      color: NotiKey.info,
-                      titulo: 'Actualice la lista',
-                      mensaje: 'Estire la lista de arriba hacia abajo');
+                  // if (_.isFromSurvey == false) return;
+                  // _.notif.mostrarSnackBar(
+                  //     color: NotiKey.info,
+                  //     titulo: 'Actualice la lista',
+                  //     mensaje: 'Estire la lista de arriba hacia abajo');
                 },
                 child: Scaffold(
                   appBar: const CustomAppBar(
@@ -47,32 +46,33 @@ class SurveyResumePage extends StatelessWidget {
                             CustomCard(
                                 child: ListTile(
                               dense: false,
-                              leading: File(_.respuesta?.pathImagen ?? '')
-                                      .existsSync()
-                                  ? InkWell(
-                                      onTap: () => Get.to(() =>
-                                          FullScreenImageView(
-                                              imageProvider: FileImage(File(
-                                                  _.respuesta!.pathImagen)))),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(50.0),
-                                        child: Image.file(
-                                          File(_.respuesta!.pathImagen),
-                                          width: 50,
-                                          // height: 50,
-                                          fit: BoxFit.cover,
+                              leading: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: _.respuesta!.sincronizado == true
+                                        ? Colors.transparent
+                                        : AppColors.primaryColor,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  backgroundColor: _.respuesta!.sincronizado
+                                      ? AppColors.successColor
+                                      : Colors.white,
+                                  child: _.respuesta!.sincronizado
+                                      ? Icon(
+                                          FontAwesomeIcons.cloudArrowUp,
+                                          color: Colors.white,
+                                          size: context.dp(2),
+                                        )
+                                      : Icon(
+                                          FontAwesomeIcons.hourglass,
+                                          color: AppColors.primaryColor,
+                                          size: context.dp(2),
                                         ),
-                                      ),
-                                    )
-                                  : CircleAvatar(
-                                      backgroundColor: AppColors.primaryColor,
-                                      child: Icon(
-                                        FontAwesomeIcons.houseCircleCheck,
-                                        color: Colors.white,
-                                        size: context.dp(2),
-                                      ),
-                                    ),
+                                ),
+                              ),
                               title: Text(
                                   '${_.respuesta?.codBoca} - ${_.respuesta?.descBoca}'),
                               trailing: Text(
@@ -83,6 +83,48 @@ class SurveyResumePage extends StatelessWidget {
                             SizedBox(
                               height: context.hp(1),
                             ),
+                            File(_.respuesta?.pathImagen ?? '').existsSync()
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      InkWell(
+                                        onTap: () => Get.to(() =>
+                                            FullScreenImageView(
+                                                imageProvider: FileImage(File(
+                                                    _.respuesta!.pathImagen)))),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(50.0),
+                                          child: Image.file(
+                                            File(_.respuesta!.pathImagen),
+                                            width: 70,
+                                            height: 70,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      if (_.isFromSurvey == false &&
+                                          _.respuesta!.sincronizado == true)
+                                        CustomIconButton(
+                                            paddingHorizontal: 10,
+                                            icon: Icons.upload,
+                                            contentCenter: true,
+                                            onPressed: () =>
+                                                _.subirImagen(_.respuesta!),
+                                            text: "Volver a subir la imagen")
+                                    ],
+                                  )
+                                : CircleAvatar(
+                                    radius: 40,
+                                    backgroundColor: AppColors
+                                        .accentColor.shade100
+                                        .withOpacity(.7),
+                                    child: Icon(
+                                      FontAwesomeIcons.ban,
+                                      color: AppColors.primaryColor,
+                                      size: context.dp(5),
+                                    ),
+                                  ),
                             Expanded(
                                 child: ListView.builder(
                                     itemCount: _.keys.length,
@@ -137,10 +179,11 @@ class SurveyResumePage extends StatelessWidget {
                                 CustomIconButton(
                                   onPressed: () {
                                     _.nav.back();
+                                    if (_.isFromSurvey == true) {
+                                      _.nav.back();
+                                    }
                                   },
-                                  text: _.isFromSurvey == false
-                                      ? 'Volver'
-                                      : 'Volver al listado de bocas',
+                                  text: 'Volver',
                                   isFilled: true,
                                 )
                               ],
@@ -186,16 +229,18 @@ class _ItemWidget extends StatelessWidget {
                 const Spacer(
                   flex: 2,
                 ),
-                if (item.comentario != null && item.comentario!.isNotEmpty)
+                if ((item.comentario != null && item.comentario!.isNotEmpty) ||
+                    (item.precio != null && item.precio!.isNotEmpty))
                   IconButton(
                       onPressed: () {
                         _showModal(
                             context: context,
                             pregunta: '',
+                            precio: item.precio,
                             respuesta: item.comentario!);
                       },
                       icon: Icon(
-                        FontAwesomeIcons.penToSquare,
+                        FontAwesomeIcons.message,
                         size: context.dp(2.5),
                       )),
                 const Spacer(
@@ -228,6 +273,7 @@ class _ItemWidget extends StatelessWidget {
   Future<String> _showModal(
       {required context,
       required String pregunta,
+      String? precio,
       required String respuesta}) async {
     String result = respuesta;
     await showModalBottomSheet(
@@ -262,10 +308,27 @@ class _ItemWidget extends StatelessWidget {
                   //   style: context.textTheme.titleMedium,
                   //   maxLines: 3,
                   // ),
+
+                  if (precio != null) ...[
+                    SizedBox(height: context.hp(.5)),
+                    TextFormField(
+                      initialValue: precio,
+                      decoration: const InputDecoration(
+                          hintText: '', label: Text('Precio')),
+                      autofocus: true,
+                      onFieldSubmitted: (value) {
+                        controller.nav.back();
+                      },
+                      enabled: false,
+                      onChanged: (value) => result = value,
+                      textCapitalization: TextCapitalization.sentences,
+                    ),
+                  ],
                   SizedBox(height: context.hp(.5)),
                   TextFormField(
                     initialValue: result,
-                    decoration: const InputDecoration(hintText: ''),
+                    decoration: const InputDecoration(
+                        hintText: '', label: Text('Comentario')),
                     autofocus: true,
                     onFieldSubmitted: (value) {
                       controller.nav.back();
