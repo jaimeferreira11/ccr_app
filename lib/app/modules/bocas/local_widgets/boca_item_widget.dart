@@ -60,11 +60,11 @@ class BocaItemWidget extends StatelessWidget {
                     size: context.dp(2),
                   )
                 : Text(
-                    boca.nombre.substring(0, 1),
+                    boca.nombre.trim().substring(0, 1),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
           ),
-          title: Text(boca.nombre),
+          title: Text(boca.nombre.trim()),
           subtitle: Text('Cod. ${boca.codBoca}'),
           minLeadingWidth: 1,
           contentPadding: EdgeInsets.symmetric(horizontal: context.wp(2)),

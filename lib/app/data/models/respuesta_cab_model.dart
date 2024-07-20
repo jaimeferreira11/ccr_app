@@ -1,3 +1,4 @@
+import 'package:ccr_app/app/data/models/respuesta_imagen_model.dart';
 import 'package:isar/isar.dart';
 
 import 'respuesta_det_model.dart';
@@ -15,21 +16,24 @@ class RespuestaCabModel {
   String usuario;
   String longitud;
   String latitud;
-  String pathImagen;
+  // String pathImagen; //! se mudó a RespuestaImagen
   String fechaCreacion;
   String horaInicio;
   String horaFin;
   bool sincronizado;
   String? fechaSincronizacion;
 
-  @ignore
-  String? imgBase64String;
+  // @ignore
+  // String? imgBase64String; //! se mudó a RespuestaImagen
 
   @ignore
   List<RespuestaDetModel> detalles;
 
   @ignore
-  String? pathImagenAux; // solo para uso local
+  List<RespuestaImagenModel> imagenes;
+
+  // @ignore
+  // String? pathImagenAux; // solo para uso local //! se mudó a RespuestaImagen
 
   RespuestaCabModel(
       {this.id,
@@ -40,12 +44,13 @@ class RespuestaCabModel {
       required this.usuario,
       required this.longitud,
       required this.latitud,
-      required this.pathImagen,
+      // required this.pathImagen,
       required this.fechaCreacion,
       required this.horaInicio,
       required this.horaFin,
       this.detalles = const [],
-      this.imgBase64String,
+      this.imagenes = const [],
+      // this.imgBase64String,
       this.sincronizado = false,
       this.fechaSincronizacion});
 
@@ -59,17 +64,21 @@ class RespuestaCabModel {
         usuario: json["usuario"],
         longitud: json["longitud"],
         latitud: json["latitud"],
-        pathImagen: json["pathImagen"],
+        // pathImagen: json["pathImagen"],
         fechaCreacion: json["fechaCreacion"],
         fechaSincronizacion: json["fechaSincronizacion"],
         horaInicio: json["horaInicio"],
         horaFin: json["horaFin"],
         sincronizado: json["sincronizado"],
-        imgBase64String: json["imgBase64String"],
+        // imgBase64String: json["imgBase64String"],
         detalles: json["detalles"] == null
             ? []
             : List<RespuestaDetModel>.from(
                 json["detalles"].map((x) => RespuestaDetModel.fromJson(x))),
+        imagenes: json["imagenes"] == null
+            ? []
+            : List<RespuestaImagenModel>.from(
+                json["imagenes"].map((x) => RespuestaImagenModel.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -81,13 +90,14 @@ class RespuestaCabModel {
         "usuario": usuario,
         "longitud": longitud,
         "latitud": latitud,
-        "pathImagen": pathImagen,
+        // "pathImagen": pathImagen,
         "fechaCreacion": fechaCreacion,
         "fechaSincronizacion": fechaSincronizacion,
         "horaInicio": horaInicio,
         "horaFin": horaFin,
         "sincronizado": sincronizado,
-        "imgBase64String": imgBase64String,
+        // "imgBase64String": imgBase64String,
         "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
+        "imagenes": List<dynamic>.from(imagenes.map((x) => x.toJson())),
       };
 }

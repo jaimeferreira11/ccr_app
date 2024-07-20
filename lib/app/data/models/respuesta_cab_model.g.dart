@@ -67,18 +67,13 @@ const RespuestaCabModelSchema = CollectionSchema(
       name: r'longitud',
       type: IsarType.string,
     ),
-    r'pathImagen': PropertySchema(
-      id: 10,
-      name: r'pathImagen',
-      type: IsarType.string,
-    ),
     r'sincronizado': PropertySchema(
-      id: 11,
+      id: 10,
       name: r'sincronizado',
       type: IsarType.bool,
     ),
     r'usuario': PropertySchema(
-      id: 12,
+      id: 11,
       name: r'usuario',
       type: IsarType.string,
     )
@@ -116,7 +111,6 @@ int _respuestaCabModelEstimateSize(
   bytesCount += 3 + object.horaInicio.length * 3;
   bytesCount += 3 + object.latitud.length * 3;
   bytesCount += 3 + object.longitud.length * 3;
-  bytesCount += 3 + object.pathImagen.length * 3;
   bytesCount += 3 + object.usuario.length * 3;
   return bytesCount;
 }
@@ -137,9 +131,8 @@ void _respuestaCabModelSerialize(
   writer.writeLong(offsets[7], object.idBoca);
   writer.writeString(offsets[8], object.latitud);
   writer.writeString(offsets[9], object.longitud);
-  writer.writeString(offsets[10], object.pathImagen);
-  writer.writeBool(offsets[11], object.sincronizado);
-  writer.writeString(offsets[12], object.usuario);
+  writer.writeBool(offsets[10], object.sincronizado);
+  writer.writeString(offsets[11], object.usuario);
 }
 
 RespuestaCabModel _respuestaCabModelDeserialize(
@@ -160,9 +153,8 @@ RespuestaCabModel _respuestaCabModelDeserialize(
     isarId: id,
     latitud: reader.readString(offsets[8]),
     longitud: reader.readString(offsets[9]),
-    pathImagen: reader.readString(offsets[10]),
-    sincronizado: reader.readBoolOrNull(offsets[11]) ?? false,
-    usuario: reader.readString(offsets[12]),
+    sincronizado: reader.readBoolOrNull(offsets[10]) ?? false,
+    usuario: reader.readString(offsets[11]),
   );
   return object;
 }
@@ -195,10 +187,8 @@ P _respuestaCabModelDeserializeProp<P>(
     case 9:
       return (reader.readString(offset)) as P;
     case 10:
-      return (reader.readString(offset)) as P;
-    case 11:
       return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 12:
+    case 11:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1612,142 +1602,6 @@ extension RespuestaCabModelQueryFilter
   }
 
   QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'pathImagen',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'pathImagen',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'pathImagen',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'pathImagen',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'pathImagen',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'pathImagen',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'pathImagen',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'pathImagen',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'pathImagen',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
-      pathImagenIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'pathImagen',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterFilterCondition>
       sincronizadoEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2042,20 +1896,6 @@ extension RespuestaCabModelQuerySortBy
   }
 
   QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterSortBy>
-      sortByPathImagen() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pathImagen', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterSortBy>
-      sortByPathImagenDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pathImagen', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterSortBy>
       sortBySincronizado() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sincronizado', Sort.asc);
@@ -2240,20 +2080,6 @@ extension RespuestaCabModelQuerySortThenBy
   }
 
   QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterSortBy>
-      thenByPathImagen() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pathImagen', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterSortBy>
-      thenByPathImagenDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pathImagen', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QAfterSortBy>
       thenBySincronizado() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sincronizado', Sort.asc);
@@ -2356,13 +2182,6 @@ extension RespuestaCabModelQueryWhereDistinct
   }
 
   QueryBuilder<RespuestaCabModel, RespuestaCabModel, QDistinct>
-      distinctByPathImagen({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'pathImagen', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, RespuestaCabModel, QDistinct>
       distinctBySincronizado() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'sincronizado');
@@ -2445,13 +2264,6 @@ extension RespuestaCabModelQueryProperty
   QueryBuilder<RespuestaCabModel, String, QQueryOperations> longitudProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'longitud');
-    });
-  }
-
-  QueryBuilder<RespuestaCabModel, String, QQueryOperations>
-      pathImagenProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'pathImagen');
     });
   }
 

@@ -1,4 +1,5 @@
 import 'package:ccr_app/app/data/models/models.dart';
+import 'package:ccr_app/app/data/models/respuesta_imagen_model.dart';
 import 'package:ccr_app/app/data/providers/local/cache.dart';
 import 'package:ccr_app/app/helpers/date_helper.dart';
 import 'package:isar/isar.dart';
@@ -21,7 +22,8 @@ class DBIsar {
         CabeceraModelSchema,
         ItemModelSchema,
         RespuestaCabModelSchema,
-        RespuestaDetModelSchema
+        RespuestaDetModelSchema,
+        RespuestaImagenModelSchema
       ], inspector: true, directory: dir.path);
     }
 
@@ -143,13 +145,18 @@ class DBIsar {
     return bocas.map((b) => b.ciudad).toSet().toList();
   }
 
-  Future<List<CabeceraModel>> getCabeceras() async {
+  Future<List<CabeceraModel>> getCabeceras(
+      {required String tipoClienteBoca}) async {
     final isar = await db;
 
     final cabeceras = await isar.cabeceraModels.where().findAll();
 
     await Future.wait(cabeceras.map((c) async {
-      c.items = await getItems(cabecera: c.codigo);
+      if (c.codigo.toUpperCase() == 'PORTAFOLIO') {
+        c.items = await getItemsPortafolio(tipoCliente: tipoClienteBoca);
+      } else {
+        c.items = await getItems(cabecera: c.codigo);
+      }
     }));
 
     return cabeceras;
@@ -165,6 +172,16 @@ class DBIsar {
     }
 
     return await isar.itemModels.where().findAll();
+  }
+
+  Future<List<ItemModel>> getItemsPortafolio(
+      {required String tipoCliente}) async {
+    final isar = await db;
+
+    return await isar.itemModels
+        .filter()
+        .ocasionEqualTo(tipoCliente, caseSensitive: false)
+        .findAll();
   }
 
   Future<BocaModel?> findBocaById(int id) async {
@@ -207,6 +224,7 @@ class DBIsar {
       if (list.isNotEmpty) {
         await Future.wait(list.map((r) async {
           r.detalles = await getRespuestaDetByCab(r.isarId!);
+          r.imagenes = await getImagenesByCab(r.isarId!);
         }));
       }
 
@@ -253,6 +271,7 @@ class DBIsar {
     }
 
     res.detalles = await getRespuestaDetByCab(res.isarId!);
+    res.imagenes = await getImagenesByCab(res.isarId!);
     return res;
   }
 
@@ -269,6 +288,7 @@ class DBIsar {
     }
 
     res.detalles = await getRespuestaDetByCab(res.isarId!);
+    res.imagenes = await getImagenesByCab(res.isarId!);
     return res;
   }
 
@@ -279,9 +299,17 @@ class DBIsar {
         .filter()
         .idRespuestaCabEqualTo(respuesta.isarId)
         .findAll();
+
+    final imagenes = await isar.respuestaImagenModels
+        .filter()
+        .idRespuestaCabEqualTo(respuesta.isarId)
+        .findAll();
+
     await isar.writeTxn(() async {
       await isar.respuestaDetModels
           .deleteAll(detalles.map((d) => d.isarId!).toList());
+      await isar.respuestaImagenModels
+          .deleteAll(imagenes.map((d) => d.isarId!).toList());
       await isar.respuestaCabModels.delete(respuesta.isarId!);
     });
   }
@@ -301,12 +329,35 @@ class DBIsar {
     }
 
     await Future.wait(list.map((r) async {
+      // detalles
       r.detalles = await getRespuestaDetByCab(r.isarId!);
+      // imagenes
+      r.imagenes = await getImagenesByCab(r.isarId!);
       await isar.writeTxn(() async {
         await isar.respuestaDetModels
             .deleteAll(r.detalles.map((d) => d.isarId!).toList());
+        await isar.respuestaImagenModels
+            .deleteAll(r.imagenes.map((d) => d.isarId!).toList());
         await isar.respuestaCabModels.delete(r.isarId!);
       });
     }));
+  }
+
+  Future<void> updateImagenesList(List<RespuestaImagenModel> imagenes) async {
+    final isar = await db;
+
+    await isar.writeTxn(() async {
+      await isar.respuestaImagenModels.putAll(imagenes);
+    });
+  }
+
+  Future<List<RespuestaImagenModel>> getImagenesByCab(
+      int idIsarCabecera) async {
+    final isar = await db;
+
+    return await isar.respuestaImagenModels
+        .filter()
+        .idRespuestaCabEqualTo(idIsarCabecera)
+        .findAll();
   }
 }

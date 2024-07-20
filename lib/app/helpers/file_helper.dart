@@ -212,4 +212,24 @@ class FileHelper {
     final directory = await getExternalStorageDirectory();
     return "${directory!.path}/$fileName";
   }
+
+  static Future<String> renameFile(
+      {required String oldPath, required String newPath}) async {
+    final file = File(oldPath);
+
+    String directoryPath = dirname(oldPath);
+
+    if (await file.exists() == false) {
+      log('The file does not exist.');
+      throw Exception('No existe el archivo');
+    }
+    try {
+      final newFile = await file.rename('$directoryPath/$newPath.jpg');
+      log('File renamed to: ${newFile.path}');
+      return newFile.path;
+    } catch (e) {
+      log('Error renaming file: $e');
+      throw Exception(e.toString());
+    }
+  }
 }

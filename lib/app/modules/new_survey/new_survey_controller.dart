@@ -14,7 +14,6 @@ import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../flavors/build_config.dart';
 import '../../data/providers/local/db_isar.dart';
 import '../../data/repositories/local/auth_repository.dart';
 import '../../data/repositories/remote/server_repository.dart';
@@ -23,7 +22,6 @@ import '../../helpers/notifications/notificacion_service.dart';
 import '../../helpers/notifications/notifications_keys.dart';
 import '../../routes/navigator.dart';
 import 'survey_items_page.dart';
-import 'survey_main_page.dart';
 
 class NewSurveyController extends GetxController {
   final authRepo = Get.find<AuthRepository>();
@@ -35,8 +33,9 @@ class NewSurveyController extends GetxController {
   RxBool workInProgress = false.obs;
   final isar = DBIsar();
 
-  List<XFile> fotos = [];
+  XFile? fotPortada;
   late int idBoca;
+  BocaModel? boca;
   RespuestaCabModel? nuevaRespuesta;
 
   @override
@@ -46,29 +45,35 @@ class NewSurveyController extends GetxController {
   }
 
   _init() async {
+    workInProgress.value = true;
     final id = Get.arguments['id'];
 
     if (id != null) {
       idBoca = id;
-      final boca = await isar.findBocaById(idBoca);
+      boca = await isar.findBocaById(idBoca);
       nuevaRespuesta = RespuestaCabModel(
           id: null,
           isarId: null,
           idBoca: idBoca,
           codBoca: boca!.codBoca,
-          descBoca: boca.nombre,
+          descBoca: boca!.nombre.trim(),
           usuario: Cache.instance.loginData.usuario.usuario,
           longitud: Cache.instance.currentLocation?.longitude.toString() ?? '',
           latitud: Cache.instance.currentLocation?.latitude.toString() ?? '',
-          pathImagen: '',
           fechaCreacion: DateHelper.dateToString(
               date: DateTime.now(), format: 'dd-MM-yyyy HH:mm'),
           horaInicio:
               DateHelper.dateToString(date: DateTime.now(), format: 'HH:mm:ss'),
           horaFin: '',
-          detalles: []);
+          detalles: [],
+          imagenes: []);
     }
+
+    cabeceras = await isar.getCabeceras(tipoClienteBoca: boca!.tipoBoca);
     await getLostData();
+    workInProgress.value = false;
+
+    update(['survey-main']);
   }
 
   /******************* 1. Foto - Inicio  *******************/ ///
@@ -87,7 +92,7 @@ class NewSurveyController extends GetxController {
     }
   }
 
-  capturarImagen() async {
+  Future<XFile?> capturarImagen() async {
     var status = await Permission.camera.status;
     if (!status.isGranted) {
       log('Pidiendo de nuevo');
@@ -98,7 +103,7 @@ class NewSurveyController extends GetxController {
           color: NotiKey.error,
           mensaje: 'Favor conceda los permisos para acceder a la camara',
           titulo: 'Atención');
-      return;
+      return null;
     }
 
     final ImagePickerPlatform imagePickerImplementation =
@@ -115,11 +120,13 @@ class NewSurveyController extends GetxController {
 
     workInProgress.value = false;
     if (pickedFile != null) {
-      fotos.add(pickedFile);
+      fotPortada = pickedFile;
       update();
 
       FileHelper.getFileSize(pickedFile.path);
     }
+
+    return pickedFile;
   }
 
   // Future<void> agregarMarcaAgua(String fullPath) async {
@@ -151,31 +158,34 @@ class NewSurveyController extends GetxController {
     final dial = await DialogoSiNo().abrirDialogoSiNo('¿Borrar imagen?', '');
 
     if (dial == 1) {
-      if (tipo == 1) fotos.removeAt(0);
+      if (tipo == 1) fotPortada = null;
       update();
     }
   }
 
-  Future<void> nextPage1() async {
-    workInProgress.value = true;
-    cabeceras = await isar.getCabeceras();
+  String armarNombreFoto(int nro) {
     String mes = DateHelper.dateToString(date: DateTime.now(), format: 'MM');
     String anio = DateHelper.dateToString(date: DateTime.now(), format: 'yyyy');
-    String dia = DateHelper.dateToString(date: DateTime.now(), format: 'dd');
-    String fileName = '${nuevaRespuesta!.codBoca}_${dia}_${mes}_${anio}_1';
-    log(fileName);
-    final path = await FileHelper.saveImageToDirectory(fotos.last,
-        folderName: BuildConfig.instance.config.imagesFolder,
-        fileName: fileName);
-    log('la imagen se guardó en: $path');
-
-    nuevaRespuesta!.pathImagen = path ?? '';
-
-    // await agregarMarcaAgua(path!);
-    update();
-    workInProgress.value = false;
-    Get.to(() => const SurveyMainPage());
+    return '${nuevaRespuesta!.codBoca}_${anio}_${mes}_$nro';
   }
+
+  // Future<void> nextPage1() async {
+  //   workInProgress.value = true;
+  //   cabeceras = await isar.getCabeceras(tipoClienteBoca: boca!.tipoBoca);
+  // final fileName = armarNombreFoto(1);
+  // log(fileName);
+  // final path = await FileHelper.saveImageToDirectory(fotPortada!,
+  //     folderName: BuildConfig.instance.config.imagesFolder,
+  //     fileName: fileName);
+  // log('la imagen se guardó en: $path');
+
+  // nuevaRespuesta!.pathImagen = path ?? '';
+
+  // await agregarMarcaAgua(path!);
+  //   update();
+  //   workInProgress.value = false;
+  //   // Get.to(() => const SurveyMainPage());
+  // }
 
   /******************* 1. Foto - FIN  *******************/ ///
 
@@ -194,12 +204,24 @@ class NewSurveyController extends GetxController {
     try {
       nuevaRespuesta!.horaFin =
           DateHelper.dateToString(date: DateTime.now(), format: 'HH:mm:ss');
+
+      // poner la fachada en primera fila, ya no se usa al quitar la primera pagina
+      // nuevaRespuesta!.imagenes = [
+      //   RespuestaImagenModel(pathImagen: nuevaRespuesta!.pathImagen),
+      //   ...nuevaRespuesta!.imagenes
+      // ];
       final savedId = await isar.insertRespuesta(nuevaRespuesta!);
       workInProgress.value = false;
 
+      // guardar las imagenes en base
+      for (var img in nuevaRespuesta!.imagenes) {
+        img.idRespuestaCab = savedId;
+      }
+      await isar.updateImagenesList(nuevaRespuesta!.imagenes);
+
       await Future.delayed(const Duration(milliseconds: 50), () {
         Get.back();
-        Get.back();
+        // Get.back(); // Se quito la pagina de la foto
         nav.goToOff(AppRoutes.resumeSurvey,
             parameters: {'id': savedId.toString()});
       });
@@ -238,11 +260,18 @@ class NewSurveyController extends GetxController {
   }
 
   double getTotalProgress() {
+    if (nuevaRespuesta == null) {
+      return 0;
+    }
     // Sumar la cantidad total de items
-    int totalItems = cabeceras.fold(0, (sum, c) => sum + c.items.length);
+    int totalItems = cabeceras.fold(0, (sum, c) => sum + c.items.length) + 1;
 
     // Obtener la cantidad total de respuestas
     int totalRespuestas = nuevaRespuesta!.detalles.length;
+
+    if (nuevaRespuesta?.imagenes.isNotEmpty ?? false) {
+      totalRespuestas++;
+    }
 
     // Calcular el progreso total
     if (totalItems == 0) {

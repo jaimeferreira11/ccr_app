@@ -29,7 +29,7 @@ class TemplatePage extends StatelessWidget {
                             onPressed: () {},
                             text: 'Siguiente',
                             isFilled: true,
-                            enabled: _.fotos.isNotEmpty,
+                            enabled: true,
                           )
                         ],
                       ),

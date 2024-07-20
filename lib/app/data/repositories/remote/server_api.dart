@@ -113,6 +113,43 @@ class ServerAPI {
     }
   }
 
+  Future<Either<Failure, void>> subirListImagen(
+      List<ImageUploadDtoModel> lista) async {
+    const url = 'api/v1/upload-list-image';
+
+    final List<Map<String, dynamic>> listaJson =
+        lista.map((respuesta) => respuesta.toJson()).toList();
+
+    final res = await _dio.client.post(url, data: jsonEncode(listaJson));
+    if (res.statusCode == 200) {
+      return right(null);
+    } else {
+      return left(const ServerFailure());
+    }
+  }
+
+  Future<Either<Failure, void>> cambiarPassword(
+      {required String usuario,
+      required String oldPwd,
+      required String newPwd}) async {
+    const url = 'api/v1/usuarios/change-password';
+
+    final body = {
+      'usuario': usuario,
+      'oldPassword': oldPwd,
+      'newPassword': newPwd,
+    };
+    final res = await _dio.client.put(url, data: jsonEncode(body));
+    if (res.statusCode == 200) {
+      return right(null);
+    }
+    if (res.statusCode == 400 || res.statusCode == 403) {
+      return left(const ServerFailure(mensaje: 'Datos incorrectos'));
+    } else {
+      return left(const ServerFailure());
+    }
+  }
+
   // Future<Either<Failure, UsuarioModel>> verificarSession() async {
   //   final url = AppConstants.API_URL + 'api/v1/oauth/check-token';
 
@@ -141,28 +178,6 @@ class ServerAPI {
   //     return left(ServerFailure());
   //   }
   // }
-
-  Future<Either<Failure, void>> cambiarPassword(
-      {required String usuario,
-      required String oldPwd,
-      required String newPwd}) async {
-    const url = 'api/v1/usuarios/change-password';
-
-    final body = {
-      'usuario': usuario,
-      'oldPassword': oldPwd,
-      'newPassword': newPwd,
-    };
-    final res = await _dio.client.put(url, data: jsonEncode(body));
-    if (res.statusCode == 200) {
-      return right(null);
-    }
-    if (res.statusCode == 400 || res.statusCode == 403) {
-      return left(const ServerFailure(mensaje: 'Datos incorrectos'));
-    } else {
-      return left(const ServerFailure());
-    }
-  }
 
   // Future<Either<Failure, String>> recuperarClave(String correo) async {
   //   final url = AppConstants.API_URL + 'public/usuario/cambiar-clave"';

@@ -96,12 +96,7 @@ int _bocaModelEstimateSize(
     }
   }
   bytesCount += 3 + object.nombre.length * 3;
-  {
-    final value = object.tipoBoca;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.tipoBoca.length * 3;
   return bytesCount;
 }
 
@@ -133,7 +128,7 @@ BocaModel _bocaModelDeserialize(
     direccion: reader.readStringOrNull(offsets[3]),
     id: reader.readLong(offsets[4]),
     nombre: reader.readString(offsets[5]),
-    tipoBoca: reader.readStringOrNull(offsets[6]),
+    tipoBoca: reader.readString(offsets[6]),
   );
   object.isarId = id;
   return object;
@@ -159,7 +154,7 @@ P _bocaModelDeserializeProp<P>(
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1076,25 +1071,8 @@ extension BocaModelQueryFilter
     });
   }
 
-  QueryBuilder<BocaModel, BocaModel, QAfterFilterCondition> tipoBocaIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'tipoBoca',
-      ));
-    });
-  }
-
-  QueryBuilder<BocaModel, BocaModel, QAfterFilterCondition>
-      tipoBocaIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'tipoBoca',
-      ));
-    });
-  }
-
   QueryBuilder<BocaModel, BocaModel, QAfterFilterCondition> tipoBocaEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1107,7 +1085,7 @@ extension BocaModelQueryFilter
   }
 
   QueryBuilder<BocaModel, BocaModel, QAfterFilterCondition> tipoBocaGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1122,7 +1100,7 @@ extension BocaModelQueryFilter
   }
 
   QueryBuilder<BocaModel, BocaModel, QAfterFilterCondition> tipoBocaLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1137,8 +1115,8 @@ extension BocaModelQueryFilter
   }
 
   QueryBuilder<BocaModel, BocaModel, QAfterFilterCondition> tipoBocaBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1510,7 +1488,7 @@ extension BocaModelQueryProperty
     });
   }
 
-  QueryBuilder<BocaModel, String?, QQueryOperations> tipoBocaProperty() {
+  QueryBuilder<BocaModel, String, QQueryOperations> tipoBocaProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'tipoBoca');
     });

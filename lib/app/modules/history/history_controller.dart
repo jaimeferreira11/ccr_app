@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ccr_app/app/global_widgets/yes_no_dialog.dart';
 import 'package:ccr_app/app/helpers/file_helper.dart';
 import 'package:ccr_app/app/helpers/utils.dart';
@@ -117,22 +119,34 @@ class HistoryController extends GetxController
       workInProgress.value = true;
       await Future.delayed(const Duration(milliseconds: 50));
 
-      await Future.wait(respuestaToUpload.map((r) async {
-        final fileName = r.pathImagen.substring(r.pathImagen.lastIndexOf('/'));
-        r.imgBase64String = await FileHelper.convertFileToBase64(r.pathImagen);
-        r.pathImagenAux = String.fromCharCodes(r.pathImagen.codeUnits);
+      await Future.wait(respuestaToUpload.map((res) async {
+        log('Colocando el path de ${res.imagenes.length} imagenes');
+        await Future.wait((res.imagenes).map((img) async {
+          final fileName =
+              img.pathImagen.substring(img.pathImagen.lastIndexOf('/'));
+          img.imgBase64String =
+              await FileHelper.convertFileToBase64(img.pathImagen);
+          img.pathImagenAux = String.fromCharCodes(img.pathImagen.codeUnits);
 
-        r.pathImagen =
-            '${BuildConfig.instance.config.imagesFolder}/${r.codBoca}$fileName';
+          img.pathImagen =
+              '${BuildConfig.instance.config.imagesFolder}/${res.codBoca}$fileName';
+        }));
       }));
+
+      // subir entidad
       final resp = await serverRepo.subirRespuestas(respuestaToUpload);
       workInProgress.value = false;
 
       resp.fold((l) => notif.mostrarInternalError(mensaje: l.mensaje),
           (r) async {
         await Future.wait(respuestaToUpload.map((r) async {
+          // volver a poner el path real a la lista de imagenes
+          await Future.wait((r.imagenes).map((img) async {
+            img.pathImagen = img.pathImagenAux ?? 'no-path';
+          }));
+          await isar.updateImagenesList(r.imagenes);
           // volver a poner el path real
-          r.pathImagen = r.pathImagenAux ?? 'no-path';
+          // r.pathImagen = r.pathImagenAux ?? 'no-path'; //! Este ya no se usa
           await isar.setRespuestaSincronizado(r);
         }));
 

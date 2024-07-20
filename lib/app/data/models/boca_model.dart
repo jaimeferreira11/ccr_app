@@ -12,7 +12,7 @@ class BocaModel {
   final String nombre;
   final String? direccion;
   final String ciudad;
-  final String? tipoBoca;
+  final String tipoBoca;
   final bool activo;
 
   @ignore
@@ -25,7 +25,7 @@ class BocaModel {
       this.direccion,
       required this.ciudad,
       required this.activo,
-      this.tipoBoca,
+      required this.tipoBoca,
       this.estaRelevado = false});
 
   factory BocaModel.fromJson(Map<String, dynamic> json) => BocaModel(

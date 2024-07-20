@@ -4,12 +4,13 @@ import 'package:ccr_app/app/data/models/models.dart';
 import 'package:ccr_app/app/global_widgets/buscando_progress_w.dart';
 import 'package:ccr_app/app/global_widgets/custom_appbar.dart';
 import 'package:ccr_app/app/global_widgets/custom_card.dart';
-import 'package:ccr_app/app/global_widgets/full_screen_image_view.dart';
+import 'package:ccr_app/app/global_widgets/full_screen_list_images_view.dart';
 import 'package:ccr_app/app/global_widgets/line_separator_widget.dart';
 import 'package:ccr_app/app/helpers/extensions.dart';
 import 'package:ccr_app/app/modules/resume/survey_resume_controller.dart';
 import 'package:ccr_app/app/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_stack/flutter_image_stack.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -74,7 +75,7 @@ class SurveyResumePage extends StatelessWidget {
                                 ),
                               ),
                               title: Text(
-                                  '${_.respuesta?.codBoca} - ${_.respuesta?.descBoca}'),
+                                  '${_.respuesta?.codBoca} - ${_.respuesta?.descBoca.trim()}'),
                               trailing: Text(
                                 '(${_.respuesta?.detalles.length ?? 0})',
                                 style: context.textTheme.titleLarge,
@@ -83,48 +84,43 @@ class SurveyResumePage extends StatelessWidget {
                             SizedBox(
                               height: context.hp(1),
                             ),
-                            File(_.respuesta?.pathImagen ?? '').existsSync()
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      InkWell(
-                                        onTap: () => Get.to(() =>
-                                            FullScreenImageView(
-                                                imageProvider: FileImage(File(
-                                                    _.respuesta!.pathImagen)))),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(50.0),
-                                          child: Image.file(
-                                            File(_.respuesta!.pathImagen),
-                                            width: 70,
-                                            height: 70,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      if (_.isFromSurvey == false &&
-                                          _.respuesta!.sincronizado == true)
-                                        CustomIconButton(
-                                            paddingHorizontal: 10,
-                                            icon: Icons.upload,
-                                            contentCenter: true,
-                                            onPressed: () =>
-                                                _.subirImagen(_.respuesta!),
-                                            text: "Volver a subir la imagen")
-                                    ],
-                                  )
-                                : CircleAvatar(
-                                    radius: 40,
-                                    backgroundColor: AppColors
-                                        .accentColor.shade100
-                                        .withOpacity(.7),
-                                    child: Icon(
-                                      FontAwesomeIcons.ban,
-                                      color: AppColors.primaryColor,
-                                      size: context.dp(5),
+                            if (_.respuesta?.imagenes.isNotEmpty ?? false)
+                              Container(
+                                  width: context.wp(80),
+                                  height: context.hp(7),
+                                  margin:
+                                      EdgeInsets.only(bottom: context.hp(2)),
+                                  child: InkWell(
+                                    onTap: () => Get.to(() =>
+                                        FullScreenListImagesView(
+                                            images: _.respuesta!.imagenes
+                                                .map((e) => FileImage(
+                                                    File(e.pathImagen)))
+                                                .toList())),
+                                    child: FlutterImageStack.widgets(
+                                      showTotalCount: true,
+                                      totalCount:
+                                          _.respuesta?.imagenes.length ?? 0,
+                                      itemRadius: 50,
+                                      itemCount: 8,
+                                      itemBorderWidth: 1,
+                                      children: _.respuesta!.imagenes
+                                          .map((e) =>
+                                              Image.file(File(e.pathImagen)))
+                                          .toList(), // Border width around the images
                                     ),
-                                  ),
+                                  )),
+                            if (_.respuesta?.imagenes.isNotEmpty ?? false)
+                              Container(
+                                width: context.wp(80),
+                                padding: EdgeInsets.only(bottom: context.hp(1)),
+                                child: CustomIconButton(
+                                    paddingHorizontal: 0,
+                                    icon: Icons.upload,
+                                    onPressed: () =>
+                                        _.subirImagenes(_.respuesta!),
+                                    text: 'Volver a subir las imágenes'),
+                              ),
                             Expanded(
                                 child: ListView.builder(
                                     itemCount: _.keys.length,
@@ -185,6 +181,9 @@ class SurveyResumePage extends StatelessWidget {
                                   },
                                   text: 'Volver',
                                   isFilled: true,
+                                ),
+                                SizedBox(
+                                  height: context.hp(1),
                                 )
                               ],
                             ),

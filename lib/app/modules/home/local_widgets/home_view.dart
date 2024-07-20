@@ -62,11 +62,9 @@ class HomeView extends StatelessWidget {
                           ),
                           SizedBox(
                             width: context.wp(25),
-                            child: FittedBox(
-                              child: Text(
-                                Cache.instance.loginData.usuario.nombreApellido,
-                                style: textTheme.bodySmall,
-                              ),
+                            child: Text(
+                              Cache.instance.loginData.usuario.nombreApellido,
+                              style: textTheme.bodySmall,
                             ),
                           ),
                         ],

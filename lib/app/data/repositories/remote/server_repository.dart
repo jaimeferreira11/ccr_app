@@ -27,6 +27,10 @@ class ServerRepository {
   Future<Either<Failure, void>> subirImagen(ImageUploadDtoModel body) =>
       _api.subirImagen(body);
 
+  Future<Either<Failure, void>> subirListImagen(
+          List<ImageUploadDtoModel> list) =>
+      _api.subirListImagen(list);
+
   Future<Either<Failure, void>> cambiarPassword(
           {required String usuario,
           required String oldPwd,

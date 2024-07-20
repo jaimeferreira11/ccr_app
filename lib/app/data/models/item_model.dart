@@ -11,6 +11,7 @@ class ItemModel {
   final String codCabecera;
   final String? pregunta;
   final String? leyenda;
+  final String? ocasion;
   final bool activo;
 
   ItemModel({
@@ -20,6 +21,7 @@ class ItemModel {
     required this.codCabecera,
     this.pregunta,
     this.leyenda,
+    this.ocasion,
     required this.activo,
   });
 
@@ -30,6 +32,7 @@ class ItemModel {
         codCabecera: json["codCabecera"],
         pregunta: json["pregunta"],
         leyenda: json["leyenda"],
+        ocasion: json["ocasion"],
         activo: json["activo"],
       );
 
@@ -40,6 +43,7 @@ class ItemModel {
         "codCabecera": codCabecera,
         "pregunta": pregunta,
         "leyenda": leyenda,
+        "ocasion": ocasion,
         "activo": activo,
       };
 

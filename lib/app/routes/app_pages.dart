@@ -5,7 +5,7 @@ import 'package:ccr_app/app/modules/download/download_page.dart';
 import 'package:ccr_app/app/modules/history/history_binding.dart';
 import 'package:ccr_app/app/modules/history/history_page.dart';
 import 'package:ccr_app/app/modules/new_survey/new_survey_binding.dart';
-import 'package:ccr_app/app/modules/new_survey/survey_photo_page.dart';
+import 'package:ccr_app/app/modules/new_survey/survey_main_page.dart';
 import 'package:ccr_app/app/modules/resume/survey_resume_binding.dart';
 import 'package:ccr_app/app/modules/resume/survey_resume_page.dart';
 import 'package:get/route_manager.dart';
@@ -46,7 +46,7 @@ class AppPage {
         binding: BocasBinding()),
     GetPage(
         name: AppRoutes.newSurvey,
-        page: () => const SurveyPhotoPage(),
+        page: () => const SurveyMainPage(),
         binding: NewSurveyBinding()),
     GetPage(
         name: AppRoutes.resumeSurvey,

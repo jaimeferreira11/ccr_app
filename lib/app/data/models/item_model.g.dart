@@ -47,8 +47,13 @@ const ItemModelSchema = CollectionSchema(
       name: r'leyenda',
       type: IsarType.string,
     ),
-    r'pregunta': PropertySchema(
+    r'ocasion': PropertySchema(
       id: 6,
+      name: r'ocasion',
+      type: IsarType.string,
+    ),
+    r'pregunta': PropertySchema(
+      id: 7,
       name: r'pregunta',
       type: IsarType.string,
     )
@@ -82,6 +87,12 @@ int _itemModelEstimateSize(
     }
   }
   {
+    final value = object.ocasion;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.pregunta;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -102,7 +113,8 @@ void _itemModelSerialize(
   writer.writeString(offsets[3], object.descripcion);
   writer.writeLong(offsets[4], object.id);
   writer.writeString(offsets[5], object.leyenda);
-  writer.writeString(offsets[6], object.pregunta);
+  writer.writeString(offsets[6], object.ocasion);
+  writer.writeString(offsets[7], object.pregunta);
 }
 
 ItemModel _itemModelDeserialize(
@@ -118,7 +130,8 @@ ItemModel _itemModelDeserialize(
     descripcion: reader.readString(offsets[3]),
     id: reader.readLong(offsets[4]),
     leyenda: reader.readStringOrNull(offsets[5]),
-    pregunta: reader.readStringOrNull(offsets[6]),
+    ocasion: reader.readStringOrNull(offsets[6]),
+    pregunta: reader.readStringOrNull(offsets[7]),
   );
   object.isarId = id;
   return object;
@@ -144,6 +157,8 @@ P _itemModelDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -861,6 +876,153 @@ extension ItemModelQueryFilter
     });
   }
 
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'ocasion',
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'ocasion',
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'ocasion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'ocasion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'ocasion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'ocasion',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'ocasion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'ocasion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'ocasion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'ocasion',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> ocasionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'ocasion',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      ocasionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'ocasion',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition> preguntaIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1089,6 +1251,18 @@ extension ItemModelQuerySortBy on QueryBuilder<ItemModel, ItemModel, QSortBy> {
     });
   }
 
+  QueryBuilder<ItemModel, ItemModel, QAfterSortBy> sortByOcasion() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'ocasion', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterSortBy> sortByOcasionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'ocasion', Sort.desc);
+    });
+  }
+
   QueryBuilder<ItemModel, ItemModel, QAfterSortBy> sortByPregunta() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pregunta', Sort.asc);
@@ -1188,6 +1362,18 @@ extension ItemModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<ItemModel, ItemModel, QAfterSortBy> thenByOcasion() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'ocasion', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterSortBy> thenByOcasionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'ocasion', Sort.desc);
+    });
+  }
+
   QueryBuilder<ItemModel, ItemModel, QAfterSortBy> thenByPregunta() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pregunta', Sort.asc);
@@ -1242,6 +1428,13 @@ extension ItemModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ItemModel, ItemModel, QDistinct> distinctByOcasion(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'ocasion', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<ItemModel, ItemModel, QDistinct> distinctByPregunta(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1291,6 +1484,12 @@ extension ItemModelQueryProperty
   QueryBuilder<ItemModel, String?, QQueryOperations> leyendaProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'leyenda');
+    });
+  }
+
+  QueryBuilder<ItemModel, String?, QQueryOperations> ocasionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'ocasion');
     });
   }
 

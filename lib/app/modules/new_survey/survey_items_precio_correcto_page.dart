@@ -381,6 +381,7 @@ class _ItemWidget extends StatelessWidget {
                         onChanged: (value) {
                           setState(() {
                             noDisponible = value!;
+                            formkey.currentState!.reset();
                             if (!noDisponible) {
                               Future.delayed(const Duration(milliseconds: 100),
                                   () {
@@ -389,8 +390,11 @@ class _ItemWidget extends StatelessWidget {
                             } else {
                               textFieldFocusNode.unfocus();
                             }
-                            if (isEnabled) {
+                            if (isEnabled && value == true) {
+                              textController.text = 'NO DISPONIBLE';
+                            } else if (valor.toUpperCase() == 'NO') {
                               textController.text = '';
+                              textFieldFocusNode.requestFocus();
                             }
                           });
                         },
@@ -435,7 +439,7 @@ class _ItemWidget extends StatelessWidget {
                               }
                             },
                             paddingHorizontal: 0,
-                            text: 'Cerrar',
+                            text: 'Aceptar',
                           ),
                         ),
                       )

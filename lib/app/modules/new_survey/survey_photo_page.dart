@@ -13,6 +13,10 @@ import 'package:get/get.dart';
 import '../../global_widgets/yes_no_dialog.dart';
 import 'new_survey_controller.dart';
 
+//@Deprecated
+/*
+  Se usa SurveyMultiplePhotoPage
+*/
 class SurveyPhotoPage extends StatelessWidget {
   const SurveyPhotoPage({super.key});
 
@@ -80,7 +84,7 @@ class SurveyPhotoPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            if (_.fotos.isNotEmpty) ...[
+                            if (_.fotPortada != null) ...[
                               Center(
                                 child: Text(
                                   'Vista previa',
@@ -92,104 +96,60 @@ class SurveyPhotoPage extends StatelessWidget {
                               SizedBox(
                                 height: context.hp(1),
                               ),
-                              Wrap(
-                                direction: Axis.horizontal,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                alignment: WrapAlignment.center,
-                                children: _.fotos
-                                    .map((e) => Container(
-                                          margin:
-                                              const EdgeInsets.only(bottom: 10),
-                                          child: Stack(
-                                            children: [
-                                              Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () => Get.to(() =>
-                                                        FullScreenImageView(
-                                                            imageProvider:
-                                                                FileImage(File(
-                                                                    e.path)))),
-                                                    child: Image.file(
-                                                      File(e.path),
-                                                      width: double.infinity,
-                                                      height: context.hp(25),
-                                                    ),
-                                                  ),
-                                                  Material(
-                                                    color: Colors.transparent,
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        _.fotos.remove(e);
-                                                        _.update();
-                                                      },
-                                                      child: Container(
-                                                        // height: 10,
-                                                        margin: const EdgeInsets
-                                                            .symmetric(
-                                                            vertical: 2),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal: 20,
-                                                                vertical: 5),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        6),
-                                                            color: AppColors
-                                                                .errorColor),
-                                                        // width: double.infinity,
-                                                        child: Text(
-                                                          'Eliminar',
-                                                          style: context
-                                                              .textTheme
-                                                              .titleMedium
-                                                              ?.copyWith(
-                                                                  color: Colors
-                                                                      .white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              // Positioned(
-                                              //   right: 100,
-                                              //   // left: 100,
-                                              //   // top: 0,
-                                              //   child: CupertinoButton(
-                                              //     color: Colors.black38,
-                                              //     padding:
-                                              //         const EdgeInsets.all(1),
-                                              //     borderRadius:
-                                              //         BorderRadius.circular(30),
-                                              //     child: Icon(
-                                              //       FontAwesomeIcons.xmark,
-                                              //       size: context.dp(2.5),
-                                              //     ),
-                                              //     onPressed: () {
-                                              //       _.fotos.remove(e);
-                                              //       _.update();
-                                              //     },
-                                              //   ),
-                                              // )
-                                            ],
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    InkWell(
+                                      onTap: () => Get.to(() =>
+                                          FullScreenImageView(
+                                              imageProvider: FileImage(
+                                                  File(_.fotPortada!.path)))),
+                                      child: Image.file(
+                                        File(_.fotPortada!.path),
+                                        width: double.infinity,
+                                        height: context.hp(25),
+                                      ),
+                                    ),
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {
+                                          _.fotPortada = null;
+                                          _.update();
+                                        },
+                                        child: Container(
+                                          // height: 10,
+                                          margin: const EdgeInsets.symmetric(
+                                              vertical: 2),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 5),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                              color: AppColors.errorColor),
+                                          // width: double.infinity,
+                                          child: Text(
+                                            'Eliminar',
+                                            style: context.textTheme.titleMedium
+                                                ?.copyWith(color: Colors.white),
                                           ),
-                                        ))
-                                    .toList(),
-                              ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
                             ],
                             const Spacer(),
                             CustomIconButton(
                               onPressed: () {
-                                _.nextPage1();
+                                // _.nextPage1();
                               },
                               text: 'Siguiente',
                               isFilled: true,
-                              enabled: _.fotos.isNotEmpty,
+                              enabled: _.fotPortada != null,
                             )
                           ],
                         ),

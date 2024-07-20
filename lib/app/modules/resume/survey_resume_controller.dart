@@ -70,7 +70,7 @@ class SurveyResumeController extends GetxController {
     keys = data.keys.toList();
   }
 
-  Future<void> subirImagen(RespuestaCabModel r) async {
+  Future<void> subirImagenes(RespuestaCabModel r) async {
     if (await Utils.checkConnection(true) == false) {
       return;
     }
@@ -85,22 +85,23 @@ class SurveyResumeController extends GetxController {
       workInProgress.value = true;
       await Future.delayed(const Duration(milliseconds: 50));
 
-      final fileName = r.pathImagen.substring(r.pathImagen.lastIndexOf('/'));
-      final imgBase64String =
-          await FileHelper.convertFileToBase64(r.pathImagen);
+      List<ImageUploadDtoModel> images = [];
 
-      if (imgBase64String == null) {
-        DialogoSiNo().abrirDialogoError('No se pudo subir la imagen');
-        return;
-      }
+      await Future.wait(r.imagenes.map((img) async {
+        final fileName =
+            img.pathImagen.substring(img.pathImagen.lastIndexOf('/'));
+        final imgBase64String =
+            await FileHelper.convertFileToBase64(img.pathImagen);
+        if (imgBase64String != null) {
+          images.add(ImageUploadDtoModel(
+              pathImagen:
+                  '${BuildConfig.instance.config.imagesFolder}/${r.codBoca}$fileName',
+              imgBase64String: imgBase64String,
+              fechaCreacion: r.fechaCreacion));
+        }
+      }));
 
-      final body = ImageUploadDtoModel(
-          pathImagen:
-              '${BuildConfig.instance.config.imagesFolder}/${r.codBoca}$fileName',
-          imgBase64String: imgBase64String,
-          fechaCreacion: r.fechaCreacion);
-
-      final resp = await serverRepo.subirImagen(body);
+      final resp = await serverRepo.subirListImagen(images);
       workInProgress.value = false;
 
       resp.fold((l) => notif.mostrarInternalError(mensaje: l.mensaje),
