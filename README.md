@@ -38,3 +38,6 @@ A new Flutter project.
   flutter build apk --flavor dev -t lib/main_dev.dart   
 
   flutter build apk --flavor qa -t lib/main_qa.dart
+
+  flutter build apk --flavor prod -t lib/main_prod.dart --build-name=1.0.0 --build-number=1
+

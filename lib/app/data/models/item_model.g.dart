@@ -42,18 +42,23 @@ const ItemModelSchema = CollectionSchema(
       name: r'id',
       type: IsarType.long,
     ),
-    r'leyenda': PropertySchema(
+    r'imgBase64String': PropertySchema(
       id: 5,
+      name: r'imgBase64String',
+      type: IsarType.string,
+    ),
+    r'leyenda': PropertySchema(
+      id: 6,
       name: r'leyenda',
       type: IsarType.string,
     ),
     r'ocasion': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'ocasion',
       type: IsarType.string,
     ),
     r'pregunta': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'pregunta',
       type: IsarType.string,
     )
@@ -80,6 +85,12 @@ int _itemModelEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.codCabecera.length * 3;
   bytesCount += 3 + object.descripcion.length * 3;
+  {
+    final value = object.imgBase64String;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.leyenda;
     if (value != null) {
@@ -112,9 +123,10 @@ void _itemModelSerialize(
   writer.writeLong(offsets[2], object.codigo);
   writer.writeString(offsets[3], object.descripcion);
   writer.writeLong(offsets[4], object.id);
-  writer.writeString(offsets[5], object.leyenda);
-  writer.writeString(offsets[6], object.ocasion);
-  writer.writeString(offsets[7], object.pregunta);
+  writer.writeString(offsets[5], object.imgBase64String);
+  writer.writeString(offsets[6], object.leyenda);
+  writer.writeString(offsets[7], object.ocasion);
+  writer.writeString(offsets[8], object.pregunta);
 }
 
 ItemModel _itemModelDeserialize(
@@ -129,9 +141,10 @@ ItemModel _itemModelDeserialize(
     codigo: reader.readLongOrNull(offsets[2]),
     descripcion: reader.readString(offsets[3]),
     id: reader.readLong(offsets[4]),
-    leyenda: reader.readStringOrNull(offsets[5]),
-    ocasion: reader.readStringOrNull(offsets[6]),
-    pregunta: reader.readStringOrNull(offsets[7]),
+    imgBase64String: reader.readStringOrNull(offsets[5]),
+    leyenda: reader.readStringOrNull(offsets[6]),
+    ocasion: reader.readStringOrNull(offsets[7]),
+    pregunta: reader.readStringOrNull(offsets[8]),
   );
   object.isarId = id;
   return object;
@@ -159,6 +172,8 @@ P _itemModelDeserializeProp<P>(
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -656,6 +671,160 @@ extension ItemModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imgBase64String',
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imgBase64String',
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imgBase64String',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'imgBase64String',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'imgBase64String',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'imgBase64String',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'imgBase64String',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'imgBase64String',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'imgBase64String',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'imgBase64String',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imgBase64String',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterFilterCondition>
+      imgBase64StringIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'imgBase64String',
+        value: '',
       ));
     });
   }
@@ -1239,6 +1408,18 @@ extension ItemModelQuerySortBy on QueryBuilder<ItemModel, ItemModel, QSortBy> {
     });
   }
 
+  QueryBuilder<ItemModel, ItemModel, QAfterSortBy> sortByImgBase64String() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgBase64String', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterSortBy> sortByImgBase64StringDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgBase64String', Sort.desc);
+    });
+  }
+
   QueryBuilder<ItemModel, ItemModel, QAfterSortBy> sortByLeyenda() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'leyenda', Sort.asc);
@@ -1338,6 +1519,18 @@ extension ItemModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<ItemModel, ItemModel, QAfterSortBy> thenByImgBase64String() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgBase64String', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ItemModel, ItemModel, QAfterSortBy> thenByImgBase64StringDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgBase64String', Sort.desc);
+    });
+  }
+
   QueryBuilder<ItemModel, ItemModel, QAfterSortBy> thenByIsarId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isarId', Sort.asc);
@@ -1421,6 +1614,14 @@ extension ItemModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ItemModel, ItemModel, QDistinct> distinctByImgBase64String(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'imgBase64String',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<ItemModel, ItemModel, QDistinct> distinctByLeyenda(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1478,6 +1679,12 @@ extension ItemModelQueryProperty
   QueryBuilder<ItemModel, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<ItemModel, String?, QQueryOperations> imgBase64StringProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'imgBase64String');
     });
   }
 

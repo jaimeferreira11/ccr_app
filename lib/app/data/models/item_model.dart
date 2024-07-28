@@ -12,6 +12,7 @@ class ItemModel {
   final String? pregunta;
   final String? leyenda;
   final String? ocasion;
+  String? imgBase64String;
   final bool activo;
 
   ItemModel({
@@ -22,6 +23,7 @@ class ItemModel {
     this.pregunta,
     this.leyenda,
     this.ocasion,
+    this.imgBase64String,
     required this.activo,
   });
 
@@ -34,6 +36,7 @@ class ItemModel {
         leyenda: json["leyenda"],
         ocasion: json["ocasion"],
         activo: json["activo"],
+        imgBase64String: json["imgBase64String"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -45,6 +48,7 @@ class ItemModel {
         "leyenda": leyenda,
         "ocasion": ocasion,
         "activo": activo,
+        "imgBase64String": imgBase64String,
       };
 
   static List<ItemModel> fromJsonList(List<dynamic> jsonList) {

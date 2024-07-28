@@ -232,4 +232,8 @@ class FileHelper {
       throw Exception(e.toString());
     }
   }
+
+  static Uint8List convertBase64ToImage(String base64String) {
+    return base64Decode(base64String);
+  }
 }

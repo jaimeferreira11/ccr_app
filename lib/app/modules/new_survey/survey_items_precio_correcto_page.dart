@@ -263,28 +263,35 @@ class _ItemWidget extends StatelessWidget {
                             .valor,
                     visualDensity: VisualDensity.compact,
                     onChanged: (value) async {
-                      final Map<String, dynamic>? resp = await _showModal(
-                          context: context,
-                          precio: item.leyenda?.extractOnlyNumbers() ?? '',
-                          valor: 'SI',
-                          isEnabled: false,
-                          comentario: _.nuevaRespuesta!.detalles
-                                  .firstWhereOrNull((d) => d.idItem == item.id)
-                                  ?.comentario ??
-                              ''
-                                  '',
-                          controller: _);
+                      //* se quita la opcion de levantar el modal cuando la respuesta es SI
+                      // final Map<String, dynamic>? resp = await _showModal(
+                      //     context: context,
+                      //     precio: item.leyenda?.extractOnlyNumbers() ?? '',
+                      //     valor: 'SI',
+                      //     isEnabled: false,
+                      //     comentario: _.nuevaRespuesta!.detalles
+                      //             .firstWhereOrNull((d) => d.idItem == item.id)
+                      //             ?.comentario ??
+                      //         ''
+                      //             '',
+                      //     controller: _);
 
-                      if (resp == null) {
-                        return;
-                      }
+                      // if (resp == null) {
+                      //   return;
+                      // }
+                      // _.responder(
+                      //     item: item,
+                      //     valor: value!,
+                      //     comentario: (resp['noDisponible'] as bool) == true
+                      //         ? 'NO DISPONIBLE'
+                      //         : '',
+                      //     precio: resp['precio']);
+
                       _.responder(
                           item: item,
                           valor: value!,
-                          comentario: (resp['noDisponible'] as bool) == true
-                              ? 'NO DISPONIBLE'
-                              : '',
-                          precio: resp['precio']);
+                          comentario: '',
+                          precio: item.leyenda?.extractOnlyNumbers() ?? '');
                       _.update(['survey-items']);
                     }),
                 Text(

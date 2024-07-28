@@ -149,37 +149,40 @@ class DBIsar {
       {required String tipoClienteBoca}) async {
     final isar = await db;
 
-    final cabeceras = await isar.cabeceraModels.where().findAll();
+    final cabeceras = await isar.cabeceraModels.where().sortById().findAll();
 
     await Future.wait(cabeceras.map((c) async {
-      if (c.codigo.toUpperCase() == 'PORTAFOLIO') {
-        c.items = await getItemsPortafolio(tipoCliente: tipoClienteBoca);
-      } else {
-        c.items = await getItems(cabecera: c.codigo);
-      }
+      c.items =
+          await getItems(cabecera: c.codigo, tipoCliente: tipoClienteBoca);
     }));
 
     return cabeceras;
   }
 
-  Future<List<ItemModel>> getItems({String? cabecera}) async {
+  Future<List<ItemModel>> getItems(
+      {String? cabecera, required String tipoCliente}) async {
     final isar = await db;
     if (cabecera != null) {
       return await isar.itemModels
           .filter()
           .codCabeceraEqualTo(cabecera, caseSensitive: false)
+          .and()
+          .group((q) => q
+              .ocasionEqualTo(tipoCliente, caseSensitive: false)
+              .or()
+              .ocasionIsNull()
+              .or()
+              .ocasionIsEmpty())
+          .sortById()
           .findAll();
     }
 
-    return await isar.itemModels.where().findAll();
-  }
-
-  Future<List<ItemModel>> getItemsPortafolio(
-      {required String tipoCliente}) async {
-    final isar = await db;
-
     return await isar.itemModels
         .filter()
+        .ocasionIsNull()
+        .or()
+        .ocasionIsEmpty()
+        .or()
         .ocasionEqualTo(tipoCliente, caseSensitive: false)
         .findAll();
   }

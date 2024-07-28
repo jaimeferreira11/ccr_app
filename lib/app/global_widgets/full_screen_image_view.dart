@@ -1,3 +1,4 @@
+import 'package:ccr_app/app/helpers/extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,11 +9,10 @@ import '../helpers/responsive.dart';
 
 class FullScreenImageView extends StatelessWidget {
   final ImageProvider imageProvider;
+  final String? text;
 
-  const FullScreenImageView({
-    super.key,
-    required this.imageProvider,
-  });
+  const FullScreenImageView(
+      {super.key, required this.imageProvider, this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +57,28 @@ class FullScreenImageView extends StatelessWidget {
               ),
             ),
           ),
+          if (text != null)
+            Positioned(
+              right: 0,
+              left: 0,
+              bottom: 30,
+              child: Material(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  width: double.infinity,
+                  decoration: const BoxDecoration(color: Colors.black38),
+                  child: Text(
+                    text!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: context.dp(1.8),
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

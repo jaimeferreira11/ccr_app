@@ -4,9 +4,11 @@ import 'package:ccr_app/app/data/models/models.dart';
 import 'package:ccr_app/app/global_widgets/buscando_progress_w.dart';
 import 'package:ccr_app/app/global_widgets/custom_appbar.dart';
 import 'package:ccr_app/app/global_widgets/custom_icon_button.dart';
+import 'package:ccr_app/app/global_widgets/full_screen_image_view.dart';
 import 'package:ccr_app/app/global_widgets/line_separator_widget.dart';
 import 'package:ccr_app/app/global_widgets/yes_no_dialog.dart';
 import 'package:ccr_app/app/helpers/extensions.dart';
+import 'package:ccr_app/app/helpers/file_helper.dart';
 import 'package:ccr_app/app/helpers/ui_helper.dart';
 import 'package:ccr_app/app/theme/colors.dart';
 import 'package:flutter/material.dart';
@@ -183,7 +185,26 @@ class _ItemWidget extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: item.pregunta == null ? context.wp(55) : context.wp(45),
+              width: context.wp(10),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: item.imgBase64String == null
+                    ? const CircleAvatar(
+                        child: Icon(Icons.image_not_supported_outlined),
+                      )
+                    : InkWell(
+                        onTap: () => Get.to(() => FullScreenImageView(
+                            text: item.descripcion,
+                            imageProvider: MemoryImage(
+                                FileHelper.convertBase64ToImage(
+                                    item.imgBase64String!)))),
+                        child: Image.memory(FileHelper.convertBase64ToImage(
+                            item.imgBase64String!)),
+                      ),
+              ),
+            ),
+            SizedBox(
+              width: item.pregunta == null ? context.wp(45) : context.wp(40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
