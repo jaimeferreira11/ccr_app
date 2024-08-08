@@ -204,7 +204,7 @@ class _ItemWidget extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: item.pregunta == null ? context.wp(45) : context.wp(40),
+              width: item.pregunta == null ? context.wp(45) : context.wp(38),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,

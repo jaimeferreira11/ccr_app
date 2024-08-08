@@ -1,3 +1,4 @@
+import 'package:ccr_app/app/config/constants.dart';
 import 'package:ccr_app/app/global_widgets/buscando_progress_w.dart';
 import 'package:ccr_app/app/global_widgets/custom_appbar.dart';
 import 'package:ccr_app/app/global_widgets/custom_card.dart';
@@ -108,8 +109,7 @@ class SurveyMainPage extends StatelessWidget {
                                         dense: false,
                                         title: Text(
                                             'Fotos (${(_.nuevaRespuesta?.imagenes.length ?? 0)})'),
-                                        trailing: _.nuevaRespuesta!.imagenes
-                                                .isNotEmpty
+                                        trailing: _validarCantidadFotos(_)
                                             ? Icon(
                                                 FontAwesomeIcons.circleCheck,
                                                 color: AppColors.successColor,
@@ -131,7 +131,7 @@ class SurveyMainPage extends StatelessWidget {
                                 enabled: _.nuevaRespuesta!.detalles.length ==
                                         _.cabeceras.fold(0,
                                             (sum, c) => sum + c.items.length) &&
-                                    _.nuevaRespuesta!.imagenes.isNotEmpty,
+                                    _validarCantidadFotos(_),
                               )
                             ],
                           ),
@@ -142,5 +142,11 @@ class SurveyMainPage extends StatelessWidget {
                 ),
               ),
             ));
+  }
+
+  bool _validarCantidadFotos(NewSurveyController _) {
+    return _.nuevaRespuesta!.imagenes.isNotEmpty &&
+        _.nuevaRespuesta!.imagenes.length >= AppConstants.minFotos &&
+        _.nuevaRespuesta!.imagenes.length <= AppConstants.maxFotos;
   }
 }

@@ -35,6 +35,18 @@ class DownloadController extends GetxController {
       return;
     }
 
+    final isar = DBIsar();
+
+    final List<RespuestaCabModel> respuestasPendientes =
+        await isar.getRespuestasByEstado(sincronizado: false, getDetails: true);
+
+    if (respuestasPendientes.isNotEmpty) {
+      DialogoSiNo().abrirDialogo("Tienes relevos pendientes",
+          'Primero suba los relevos pendientes antes de descargar los datos.');
+
+      return;
+    }
+
     final dial = await DialogoSiNo().abrirDialogoSiNo(
         "¿Descargar ahora?", 'Se borrarán todos los datos del dispositivos');
 
@@ -44,8 +56,6 @@ class DownloadController extends GetxController {
     // workInProgress.value = true;
     status = FormzSubmissionStatus.inProgress;
     update();
-
-    final isar = DBIsar();
 
     final futures = [
       serverRepo.getBocas(),

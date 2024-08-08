@@ -400,25 +400,22 @@ class _Formulario extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(
-            height: 5,
-          ),
           Text(
             titulo,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+            style: context.textTheme.titleLarge,
           ),
           const SizedBox(
-            height: 5,
+            height: 10,
           ),
           const Divider(
             height: 1,
           ),
           const SizedBox(
-            height: 30,
+            height: 10,
           ),
           Text(
             mensaje,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            style: context.textTheme.bodyMedium,
           ),
           const SizedBox(
             height: 40,
@@ -428,7 +425,7 @@ class _Formulario extends StatelessWidget {
             child: ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(
-                  AppColors.secondaryColor,
+                  AppColors.primaryColor,
                 ),
               ),
               child: const Text(

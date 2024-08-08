@@ -42,6 +42,17 @@ class SurveyMultiplePhotoPage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
+                            height: context.hp(1),
+                          ),
+                          Center(
+                            child: Text(
+                              'Mínimo ${AppConstants.minFotos} fotos',
+                              style: context.textTheme.titleMedium
+                                  ?.copyWith(color: Colors.black54),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          SizedBox(
                             height: context.hp(2),
                           ),
                           Center(

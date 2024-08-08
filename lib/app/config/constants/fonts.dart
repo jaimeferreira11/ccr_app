@@ -6,10 +6,10 @@ class Fonts {
   static double fontSizeXXXS = Get.context!.dp(1);
 
   /// Tamaño de fuente extra extra pequeño, igual a 10.
-  static double fontSizeXXS = 10;
+  static double fontSizeXXS = 9.5;
 
   /// Tamaño de fuente extra pequeño, igual a 11.
-  static double fontSizeXS = 11;
+  static double fontSizeXS = 10.5;
 
   /// Tamaño de fuente pequeño, igual a 12.
   static double fontSizeSM = 12;
