@@ -6,6 +6,7 @@ import '../../data/models/models.dart';
 import '../../data/providers/local/db_isar.dart';
 import '../../data/repositories/local/auth_repository.dart';
 import '../../data/repositories/remote/server_repository.dart';
+import '../../helpers/utils.dart';
 import '../../routes/navigator.dart';
 
 class BocasController extends GetxController {
@@ -32,6 +33,7 @@ class BocasController extends GetxController {
   void onReady() {
     super.onReady();
     _init();
+    Utils.acquireCurrentLocation();
   }
 
   _init() async {

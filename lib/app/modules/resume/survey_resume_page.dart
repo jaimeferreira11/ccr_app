@@ -110,7 +110,8 @@ class SurveyResumePage extends StatelessWidget {
                                           .toList(), // Border width around the images
                                     ),
                                   )),
-                            if (_.respuesta?.imagenes.isNotEmpty ?? false)
+                            if ((_.respuesta?.imagenes.isNotEmpty ?? false) &&
+                                _.isFromSurvey == false)
                               Container(
                                 width: context.wp(80),
                                 padding: EdgeInsets.only(bottom: context.hp(1)),

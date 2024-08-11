@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:path/path.dart';
 
+import '../data/providers/local/cache.dart';
+
 class Utils {
   static Future<bool> checkConnection(bool toast) async {
     List<ConnectivityResult> connectivityResult =
@@ -82,6 +84,9 @@ class Utils {
 
     final locationData = await location.getLocation();
     log('La ubicacion actual es : $locationData');
+    if (locationData.latitude != null) {
+      Cache.instance.currentLocation = locationData;
+    }
     return locationData.latitude == null ? null : locationData;
   }
 

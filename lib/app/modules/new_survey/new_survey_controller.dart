@@ -5,6 +5,7 @@ import 'package:ccr_app/app/data/models/models.dart';
 import 'package:ccr_app/app/data/providers/local/cache.dart';
 import 'package:ccr_app/app/helpers/date_helper.dart';
 import 'package:ccr_app/app/helpers/file_helper.dart';
+import 'package:ccr_app/app/helpers/utils.dart';
 import 'package:ccr_app/app/modules/home/home_controller.dart';
 import 'package:ccr_app/app/modules/new_survey/survey_items_precio_correcto_page.dart';
 import 'package:ccr_app/app/routes/app_routes.dart';
@@ -74,6 +75,17 @@ class NewSurveyController extends GetxController {
     workInProgress.value = false;
 
     update(['survey-main']);
+    updateGeo();
+  }
+
+  Future<void> updateGeo() async {
+    await Utils.acquireCurrentLocation();
+    if (nuevaRespuesta != null) {
+      nuevaRespuesta?.longitud =
+          Cache.instance.currentLocation?.longitude.toString() ?? '';
+      nuevaRespuesta?.latitud =
+          Cache.instance.currentLocation?.latitude.toString() ?? '';
+    }
   }
 
   /******************* 1. Foto - Inicio  *******************/ ///

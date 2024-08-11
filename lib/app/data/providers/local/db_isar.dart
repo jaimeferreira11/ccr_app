@@ -95,13 +95,11 @@ class DBIsar {
           .nombreContains(term, caseSensitive: false)
           .or()
           .codBocaContains(term, caseSensitive: false)
-          .sortByNombre()
           .findAll();
     } else if (ciudad.isNotEmpty && term.isEmpty) {
       result = await isar.bocaModels
           .filter()
           .ciudadEqualTo(ciudad, caseSensitive: false)
-          .sortByNombre()
           .findAll();
     } else if (ciudad.isNotEmpty && term.isNotEmpty) {
       result = await isar.bocaModels
@@ -111,15 +109,10 @@ class DBIsar {
           .codBocaContains(term, caseSensitive: false)
           .and()
           .ciudadEqualTo(ciudad, caseSensitive: false)
-          .sortByNombre()
           .findAll();
     } else {
-      result = await isar.bocaModels
-          .where()
-          .sortByNombre()
-          .offset(offset)
-          .limit(limit)
-          .findAll();
+      result =
+          await isar.bocaModels.where().offset(offset).limit(limit).findAll();
     }
 
     if (respuestas.isNotEmpty) {
@@ -133,6 +126,8 @@ class DBIsar {
         }
       }
     }
+
+    result.shuffle();
 
     result.sort(
         (a, b) => (a.estaRelevado ? 1 : 0).compareTo(b.estaRelevado ? 1 : 0));

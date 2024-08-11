@@ -4,6 +4,7 @@ import 'package:ccr_app/app/data/models/sync_model.dart';
 import 'package:ccr_app/app/data/providers/local/cache.dart';
 import 'package:ccr_app/app/global_widgets/yes_no_dialog.dart';
 import 'package:ccr_app/app/helpers/date_helper.dart';
+import 'package:ccr_app/app/helpers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -84,6 +85,7 @@ class HomeController extends GetxController {
       });
     }
 
+    Utils.acquireCurrentLocation();
     super.onReady();
   }
 
