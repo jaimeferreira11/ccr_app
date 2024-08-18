@@ -68,41 +68,40 @@ class FileHelper {
   static Future<String?> saveImageToDirectory(XFile imageFile,
       {String? directoryPath, String? folderName, String? fileName}) async {
     try {
-      // TODO: Revisar
-      // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       bool isAndroidPermissionStorageGranted = true;
 
-      // if (Platform.isAndroid) {
-      //   AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      //   log('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
-      //   if (androidInfo.version.sdkInt >= 33) {
-      //     isAndroidPermissionStorageGranted = true;
-      //   } else {
-      //     isAndroidPermissionStorageGranted =
-      //         await Permission.storage.request().isGranted;
-      //   }
-      // } else {
-      //   isAndroidPermissionStorageGranted = true;
-      // }
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        log('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
+        if (androidInfo.version.sdkInt >= 33) {
+          isAndroidPermissionStorageGranted = true;
+        } else {
+          isAndroidPermissionStorageGranted =
+              await Permission.storage.request().isGranted;
+        }
+      } else {
+        isAndroidPermissionStorageGranted = true;
+      }
 
-      // if (!isAndroidPermissionStorageGranted) {
-      //   Get.snackbar(
-      //     "Atención", // title
-      //     "Acepta los permisos", // message
-      //     icon: const Icon(
-      //       Icons.warning,
-      //       color: Colors.white,
-      //     ),
-      //     shouldIconPulse: true,
-      //     snackPosition: SnackPosition.BOTTOM,
-      //     isDismissible: true,
-      //     backgroundColor: Colors.red.shade600,
-      //     colorText: Colors.white,
-      //     duration: const Duration(seconds: 3),
-      //   );
+      if (!isAndroidPermissionStorageGranted) {
+        Get.snackbar(
+          "Atención", // title
+          "Acepta los permisos", // message
+          icon: const Icon(
+            Icons.warning,
+            color: Colors.white,
+          ),
+          shouldIconPulse: true,
+          snackPosition: SnackPosition.BOTTOM,
+          isDismissible: true,
+          backgroundColor: Colors.red.shade600,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
 
-      //   return null;
-      // }
+        return null;
+      }
 
       final directory = directoryPath != null
           ? Directory(directoryPath)
@@ -120,6 +119,8 @@ class FileHelper {
           '${appDirectory.path}/${fileName ?? '${DateTime.now().millisecondsSinceEpoch}'}.jpg';
       final File file = File(imagePath);
       await imageFile.saveTo(file.path);
+
+      log('Imagen guardada en: $imagePath');
 
       return imagePath; // Retorna la ruta completa del archivo guardado
     } catch (e) {

@@ -105,22 +105,46 @@ class SurveyResumePage extends StatelessWidget {
                                       itemCount: 8,
                                       itemBorderWidth: 1,
                                       children: _.respuesta!.imagenes
-                                          .map((e) =>
-                                              Image.file(File(e.pathImagen)))
+                                          .map((e) => Image.file(
+                                                File(e.pathImagen),
+                                                errorBuilder: (context, error,
+                                                        stackTrace) =>
+                                                    const Center(
+                                                        child: Text(
+                                                  'No encontrado',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(fontSize: 8),
+                                                )),
+                                              ))
                                           .toList(), // Border width around the images
                                     ),
                                   )),
                             if ((_.respuesta?.imagenes.isNotEmpty ?? false) &&
+                                _.isFromSurvey == false &&
+                                (_.respuesta?.sincronizado ?? false))
+                              Container(
+                                width: context.wp(80),
+                                padding: EdgeInsets.only(bottom: context.hp(1)),
+                                child: CustomIconButton(
+                                    enabled: _.existeImagenes(),
+                                    paddingHorizontal: 0,
+                                    icon: Icons.upload,
+                                    onPressed: () =>
+                                        _.subirImagenes(_.respuesta!),
+                                    text: 'Volver a subir las imágenes'),
+                              ),
+                            if ((_.respuesta?.sincronizado ?? false) &&
                                 _.isFromSurvey == false)
                               Container(
                                 width: context.wp(80),
                                 padding: EdgeInsets.only(bottom: context.hp(1)),
                                 child: CustomIconButton(
                                     paddingHorizontal: 0,
-                                    icon: Icons.upload,
+                                    icon: Icons.upload_outlined,
+                                    color: AppColors.errorColor,
                                     onPressed: () =>
-                                        _.subirImagenes(_.respuesta!),
-                                    text: 'Volver a subir las imágenes'),
+                                        _.volverASincronizar(_.respuesta!),
+                                    text: 'Volver a sincronizar el relevo'),
                               ),
                             Expanded(
                                 child: ListView.builder(

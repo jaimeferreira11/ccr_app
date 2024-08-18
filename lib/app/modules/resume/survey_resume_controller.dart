@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ccr_app/app/data/models/image_upload_dto_model.dart';
 import 'package:ccr_app/app/helpers/notifications/notificacion_service.dart';
 import 'package:get/get.dart';
@@ -70,6 +72,13 @@ class SurveyResumeController extends GetxController {
     keys = data.keys.toList();
   }
 
+  bool existeImagenes() {
+    if (respuesta!.imagenes.isEmpty) return false;
+
+    // Retorna true si al menos una imagen existe.
+    return respuesta!.imagenes.any((img) => File(img.pathImagen).existsSync());
+  }
+
   Future<void> subirImagenes(RespuestaCabModel r) async {
     if (await Utils.checkConnection(true) == false) {
       return;
@@ -107,6 +116,37 @@ class SurveyResumeController extends GetxController {
       resp.fold((l) => notif.mostrarInternalError(mensaje: l.mensaje),
           (r) async {
         await DialogoSiNo().abrirDialogoSucccess('Imagen subida nuevamente');
+      });
+    } catch (e) {
+      print(e);
+      workInProgress.value = false;
+      notif.mostrarInternalError(mensaje: e.toString());
+    }
+  }
+
+  Future<void> volverASincronizar(RespuestaCabModel respuesta) async {
+    if (await Utils.checkConnection(true) == false) {
+      return;
+    }
+    final dial = await DialogoSiNo().abrirDialogoSiNo(
+        '¿Volver a sincronizar el relevo?',
+        'Debes tener buena conexión a internet');
+
+    if (dial == 0) {
+      return;
+    }
+
+    try {
+      workInProgress.value = true;
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      workInProgress.value = true;
+      final resp = await serverRepo.subirRespuestas([respuesta]);
+      workInProgress.value = false;
+
+      resp.fold((l) => notif.mostrarInternalError(mensaje: l.mensaje),
+          (r) async {
+        await DialogoSiNo().abrirDialogoSucccess('Relevo subido nuevamente');
       });
     } catch (e) {
       print(e);

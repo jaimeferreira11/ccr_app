@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:ccr_app/app/config/constants.dart';
 import 'package:ccr_app/app/global_widgets/buscando_progress_w.dart';
 import 'package:ccr_app/app/global_widgets/custom_appbar.dart';
@@ -11,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../data/models/respuesta_imagen_model.dart';
 import '../../global_widgets/yes_no_dialog.dart';
 import 'new_survey_controller.dart';
 
@@ -123,7 +127,15 @@ class SurveyMainPage extends StatelessWidget {
                               ),
                               const Spacer(),
                               CustomIconButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  final isok =
+                                      await _verificarExistenciaFoto(_);
+
+                                  if (!isok) {
+                                    DialogoSiNo().abrirDialogo("Atención",
+                                        "Una o mas imágenes no fueran guardadas correctamente.\nPor favor, revísalas antes de continuar.");
+                                    return;
+                                  }
                                   _.finalizar();
                                 },
                                 text: 'Finalizar relevo',
@@ -148,5 +160,26 @@ class SurveyMainPage extends StatelessWidget {
     return _.nuevaRespuesta!.imagenes.isNotEmpty &&
         _.nuevaRespuesta!.imagenes.length >= AppConstants.minFotos &&
         _.nuevaRespuesta!.imagenes.length <= AppConstants.maxFotos;
+  }
+
+  Future<bool> _verificarExistenciaFoto(NewSurveyController _) async {
+    if (_.nuevaRespuesta!.imagenes.isEmpty) return false;
+
+    bool isOk = true;
+    final List<RespuestaImagenModel> copiaImagenes =
+        List.from(_.nuevaRespuesta!.imagenes);
+
+    for (var img in copiaImagenes) {
+      final file = File(img.pathImagen);
+      final exists = file.existsSync();
+      if (!exists) {
+        log('La imagen no existe, se eliminara de la lista');
+        _.nuevaRespuesta!.imagenes.remove(img);
+        _.update(['survey-main']);
+        isOk = false;
+      }
+    }
+
+    return isOk;
   }
 }

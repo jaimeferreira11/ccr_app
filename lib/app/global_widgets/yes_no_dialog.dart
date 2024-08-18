@@ -166,7 +166,7 @@ class _StackDialog extends StatelessWidget {
             right: 20,
             bottom: 20.0,
           ),
-          margin: const EdgeInsets.only(top: 45.0),
+          margin: const EdgeInsets.only(top: 55.0),
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             color: Colors.white,

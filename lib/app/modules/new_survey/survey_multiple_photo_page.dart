@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:ccr_app/app/config/constants.dart';
 import 'package:ccr_app/app/data/models/respuesta_imagen_model.dart';
@@ -13,6 +14,7 @@ import 'package:ccr_app/flavors/build_config.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import '../../helpers/file_helper.dart';
 import 'new_survey_controller.dart';
@@ -229,7 +231,16 @@ class SurveyMultiplePhotoPage extends StatelessWidget {
     final path = await FileHelper.saveImageToDirectory(file,
         folderName: BuildConfig.instance.config.imagesFolder,
         fileName: fileName);
+
     final res = RespuestaImagenModel(pathImagen: path ?? '');
+
+    // guardar en galeria como backup
+    Uint8List imageBytes = await file.readAsBytes();
+    await ImageGallerySaver.saveImage(
+      imageBytes,
+      quality: 40,
+      name: fileName,
+    );
 
     _.nuevaRespuesta!.imagenes = [
       ..._.nuevaRespuesta!.imagenes,
