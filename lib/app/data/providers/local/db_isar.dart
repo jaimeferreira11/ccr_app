@@ -135,7 +135,8 @@ class DBIsar {
   }
 
   Future<List<String>> getCiudades() async {
-    final bocas = await getBocas();
+    final isar = await db;
+    final bocas = await isar.bocaModels.where().findAll();
 
     return bocas.map((b) => b.ciudad).toSet().toList();
   }
